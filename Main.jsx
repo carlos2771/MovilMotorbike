@@ -5,17 +5,19 @@ import SignUp from "./src/screens/SingIn";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Compras from "./src/screens/Compras";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import StackAuth from "./src/navigation/StackAuth";
-import AuthProvider from "./src/context/AuthProvider";
-import Main from "./Main";
+import AuthProvider, { AuthContext } from "./src/context/AuthProvider";
+import DrawerAppNavigation from "./src/navigation/DrawerAppNavigation";
 
-export default function App() {
-
+export default function Main() {
+    const {auth } = useContext(AuthContext) 
   return (
-    <AuthProvider>
-      <Main/>
-    </AuthProvider>
+   
+      <NavigationContainer>
+     {auth ? <DrawerAppNavigation/> : <StackAuth/>}
+      </NavigationContainer>
+    
   );
 }
 
