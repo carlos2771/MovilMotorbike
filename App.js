@@ -9,12 +9,18 @@ import { useState } from "react";
 import StackAuth from "./src/navigation/StackAuth";
 import AuthProvider from "./src/context/AuthProvider";
 import Main from "./Main";
+import { CompraProvider } from "./src/context/ComprasContext";
+import { RepuestoProvider } from "./src/context/RepuestosContext";
 
 export default function App() {
 
   return (
     <AuthProvider>
+      <CompraProvider>
+        <RepuestoProvider>
       <Main/>
+        </RepuestoProvider>
+      </CompraProvider>
     </AuthProvider>
   );
 }

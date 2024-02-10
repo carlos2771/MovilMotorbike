@@ -16,6 +16,8 @@ export default function Main() {
    
       <NavigationContainer>
      {auth ? <DrawerAppNavigation/> : <StackAuth/>}
+     
+
       </NavigationContainer>
     
   );
