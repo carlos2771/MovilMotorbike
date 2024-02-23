@@ -1,11 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, View, ScrollView, Button, FlatList,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Button, FlatList, TouchableOpacity, Alert, Dimensions, TextInput } from 'react-native';
 import { axiosClient } from '../api/axiosInstance';
 import CardCompras from '../components/card/CardCompras';
 import { useNavigation } from '@react-navigation/native';
+import { useCompras } from "../context/ComprasContext";
+import moment from 'moment';
 
 export default function Compras({ navigation }) {
   const [compras, setCompras] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { errors: comprasErrors, anulado } = useCompras();
 
   const getCompras = useCallback(async () => {
     try {
@@ -17,18 +21,14 @@ export default function Compras({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // Llama a la función getCompras al cargar el componente
     getCompras();
   }, [getCompras]);
 
   useEffect(() => {
-    // Configura un escuchador de enventos (event listener) para la emisión de eventos de recarga
     const reloadListener = navigation.addListener('focus', () => {
-      // Cuando se enfoca en la pantalla, vuelve a cargar las compras
       getCompras();
     });
 
-    // Devuelve una función de limpieza para eliminar el escuchador de eventos cuando el componente se desmonta
     return () => {
       reloadListener();
     };
@@ -42,20 +42,46 @@ export default function Compras({ navigation }) {
     navigation.navigate('createCompras');
   };
 
+  const filteredCompras = compras.filter(item => {
+    return item.codigo.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
   return (
     <View style={styles.container}>
-      <View>
+      <View style={styles.buttonContainer}>
         <Button title="Create Compras" onPress={goToCreateCompras} />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Codigo..."
+        onChangeText={text => setSearchTerm(text)}
+        value={searchTerm}
+      />
+      </View>
+      <View>
+        <Text>{comprasErrors.map((error, i) => (
+          <Text style={styles.err} key={i}>
+            <Text> {error}</Text>
+          </Text>
+        ))} </Text>
         <FlatList
-          data={compras}
+          style={styles.cart}
+          data={filteredCompras}
           keyExtractor={(item) => item._id}
+          numColumns={2}
           renderItem={({ item }) => {
             const namesArray = item.repuestos.map((i) => i.nombre_repuesto);
             const namesStringFormatted = namesArray.join(', ');
-            console.log(namesArray.join(', '));
+            const namesArray2 = item.repuestos.map((i) => i.precio_total);
+            const namesStringFormatted2 = namesArray2.join(', ');
             return (
               <TouchableOpacity onPress={() => onPressItem(item._id)}>
-                <CardCompras repuestos={namesStringFormatted} fechaCreacion={item.createdAt} />
+                <CardCompras
+                  codigo={item.codigo}
+                  proveedor={item.proveedor}
+                  total={namesStringFormatted2}
+                  fecha={moment(item.fecha).format('YYYY-MM-DD')}
+                  repuestos={namesStringFormatted}
+                />
               </TouchableOpacity>
             );
           }}
@@ -63,11 +89,36 @@ export default function Compras({ navigation }) {
       </View>
     </View>
   );
-        }
+}
 
 const styles = StyleSheet.create({
+
+  err: {
+    backgroundColor: "red",
+    padding: 2,
+    color: "white"
+  },
+
+  buttonContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+    
+  },
+
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 10,
+  },
+
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    width: 100,
+    marginLeft:270,
+    marginTop:5
   },
 });

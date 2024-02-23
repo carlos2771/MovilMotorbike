@@ -34,7 +34,7 @@ export default function CreateCompras() {
     const fetchData = async () => {
       try {
         const response = await axiosClient.get("/repuestos");
-        const repuestosData = response.data;
+        const repuestosData = response.data.filter(repuesto => repuesto.estado === "Activo"); // Filtrar por estado "Activo"
         setState((prevState) => ({
           ...prevState,
           repuestos: repuestosData,
@@ -43,9 +43,12 @@ export default function CreateCompras() {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
+
+  
 
   const handleChangeText = (value, name) => {
     setState({ ...state, [name]: value });
@@ -66,6 +69,7 @@ export default function CreateCompras() {
 
   const saveProduct = async () => {
     try {
+      
       // Filtra solo los repuestos seleccionados
       const repuestosSeleccionados = state.repuestos.filter(repuesto => repuesto.selected);
 
@@ -102,11 +106,18 @@ export default function CreateCompras() {
   };
 
   const handleRepuestoSelection = (repuesto) => {
-    // Actualiza el estado para marcar/desmarcar el repuesto
-    const repuestosActualizados = state.repuestos.map(r => ({
+    // Desmarca todos los repuestos
+    const repuestosDesmarcados = state.repuestos.map(r => ({
       ...r,
-      selected: r._id === repuesto._id ? !r.selected : r.selected,
+      selected: false,
     }));
+
+    // Encuentra el repuesto seleccionado y márcalo
+    const repuestosActualizados = repuestosDesmarcados.map(r => ({
+      ...r,
+      selected: r._id === repuesto._id ? true : r.selected,
+    }));
+
     setState({ ...state, repuestos: repuestosActualizados });
   };
 
@@ -128,6 +139,7 @@ export default function CreateCompras() {
         />
       </View>
       <View style={styles.inputgroup}>
+        <View style={styles.list}>
         <Text>Repuestos disponibles:</Text>
         <FlatList
           data={state.repuestos}
@@ -144,6 +156,7 @@ export default function CreateCompras() {
             </Text>
           )}
         />
+        </View>
       </View>
       <View style={styles.inputgroup}>
         <TextInput
@@ -185,9 +198,13 @@ const styles = StyleSheet.create({
   },
   inputgroup: {
     flex: 1,
+    
     padding: 0,
     marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
   },
+  list: {
+    maxHeight:100
+  }
 });

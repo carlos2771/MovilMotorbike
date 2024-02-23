@@ -21,6 +21,7 @@ export const useCompras = () => {
 export function CompraProvider({ children }) {
   const [compras, setCompras] = useState([]);
   const [errors, setErrors] = useState([]);
+  const [anulado, setAnulado] = useState(false)
 
   const getCompras = async () => {
     try {
@@ -71,6 +72,10 @@ export function CompraProvider({ children }) {
       console.error(error);
     }
   };
+  const anularCompra = (req, res) => {
+    setAnulado(true)
+    console.log("anuladdoo",anulado);
+  }
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -85,6 +90,8 @@ export function CompraProvider({ children }) {
     <CompraContext.Provider
       value={{
         compras,
+        anulado,
+        anularCompra,
         errors,
         getCompras,
         createCompra,
