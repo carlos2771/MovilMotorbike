@@ -7,35 +7,33 @@ import { useCompras } from "../context/ComprasContext";
 import moment from 'moment';
 
 export default function Compras({ navigation }) {
-  const [compras, setCompras] = useState([]);
+ 
   const [searchTerm, setSearchTerm] = useState('');
-  const { errors: comprasErrors, anulado } = useCompras();
+  const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
 
-  const getCompras = useCallback(async () => {
-    try {
-      const response = await axiosClient.get('/compras');
-      setCompras(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }, []);
+  // const getCompras = useCallback(async () => {
+  //   try {
+  //     const response = await axiosClient.get('/compras');
+  //     setCompras(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // }, []);
+  console.log("lass compras",compras);
 
-  useEffect(() => {
-    getCompras();
-  }, [getCompras]);
-
+ 
   useEffect(() => {
     const reloadListener = navigation.addListener('focus', () => {
       getCompras();
     });
-
+    console.log("oeoeoeoe");
     return () => {
       reloadListener();
     };
   }, [navigation, getCompras]);
 
-  const onPressItem = (compraId) => {
-    navigation.navigate("detalle", { compraId });
+  const onPressItem = (item) => {
+    navigation.navigate("detalle", {compra: {item} } );
   };
 
   const goToCreateCompras = () => {
@@ -74,7 +72,7 @@ export default function Compras({ navigation }) {
             const namesArray2 = item.repuestos.map((i) => i.precio_total);
             const namesStringFormatted2 = namesArray2.join(', ');
             return (
-              <TouchableOpacity onPress={() => onPressItem(item._id)}>
+              <TouchableOpacity onPress={() => onPressItem(item)}>
                 <CardCompras
                   codigo={item.codigo}
                   proveedor={item.proveedor}

@@ -7,46 +7,54 @@ import { useCompras } from "../context/ComprasContext"
 
 export default function DetalleCompra(props) {
 
-  const [repuestoName, setRepuestoName] = useState("");
   const navigation = useNavigation();
-  const { anularCompra, anular, errors: comprasErrors, updateCompra } = useCompras()
+  const {  errors: comprasErrors, updateCompra } = useCompras()
+  console.log("params",props.route.params.compra);
+  const {_id:id, anulado,repuestos} = props.route.params.compra
 
-  const getCompras = useCallback(async () => {
+  console.log("idd", id);
+ 
+
+  // const getCompras = useCallback(async () => {
+  //   try {
+  //     const response = await axiosClient.get('/compras');
+  //     setCompras(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // }, []);
+
+  // const getCompra = async (id) => {
+  //   try {
+  //     const response = await axiosClient.get(`/compras/${id}`);
+
+  //     setIsCanceled(response.data.anulado)
+  //     // Si el repuesto es un array, establece el nombre del primer repuesto en el estado
+  //     if (Array.isArray(response.data.repuestos) && response.data.repuestos.length > 0) {
+  //       setRepuestoName(response.data.repuestos[0].nombre_repuesto);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //   }
+  // };
+  
+  
+  // useEffect(() => {
+  //   // Llama a la función getCompras al cargar el componente
+    
+  //   console.log("id",props.route.params.compraId);
+  //   getCompras()
+  //   getCompra(props.route.params.compraId);
+  //   console.log("poesjfp");
+  // }, [getCompra(),props.route.params.compraId]);
+
+  const onSubmit = async () => {
     try {
-      const response = await axiosClient.get('/compras');
-      setCompras(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }, []);
-
-  const getCompra = async (id) => {
-    try {
-      const response = await axiosClient.get(`/compras/${id}`);
-      // Si el repuesto es un array, establece el nombre del primer repuesto en el estado
-      if (Array.isArray(response.data.repuestos) && response.data.repuestos.length > 0) {
-        setRepuestoName(response.data.repuestos[0].nombre_repuesto);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    // Llama a la función getCompras al cargar el componente
-    getCompras();
-    getCompra(props.route.params.compraId);
-  }, [getCompras, props.route.params.compraId]);
-
-  const onSubmit = async (id) => {
-    try {
-      updateCompra(id)
-      if (response) { // eliminar si quiere avanzar a compras
-        anularCompra()
-
-      }
-      navigation.navigate('compras')
-      Alert.alert("anulado")
+       // eliminar si quiere avanzar a compras
+        await updateCompra(id)
+        navigation.navigate('compras')
+        Alert.alert("anulado")
+      
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -61,11 +69,14 @@ export default function DetalleCompra(props) {
       ))} </Text>
       <Text style={styles.titulo} >Detalle del producto</Text>
 
-      <Text style={styles.sub}>Nombre: {repuestoName}</Text>
+      <Text style={styles.sub}>Nombre: {repuestos[0].nombre_repuesto}</Text>
 
-      <TouchableOpacity style={styles.BotonLista} onPress={() => onSubmit(props.route.params.compraId)}>
+      {!anulado ?
+        <TouchableOpacity style={styles.BotonLista} onPress={() => onSubmit()}>
         <Text style={styles.TextoNombre}>Eliminar</Text>
       </TouchableOpacity>
+      : <Text>Eliminado</Text>
+}
     </View>
   )
 }

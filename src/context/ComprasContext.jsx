@@ -54,7 +54,7 @@ export function CompraProvider({ children }) {
 
   const updateCompra = async (id, compra) => {
     try {
-      return await updateComprasRequest(id, compra);
+      return await updateComprasRequest(id, compra ?? {});
     } catch (error) {
       console.error(error);
       setErrors(error.response.data.message);
