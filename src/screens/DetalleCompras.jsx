@@ -1,115 +1,106 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
 import { axiosClient } from "../api/axiosInstance";
 import { useNavigation } from '@react-navigation/native';
-import { useCompras } from "../context/ComprasContext"
-
+import { useCompras } from "../context/ComprasContext";
+import moment from 'moment';
 
 export default function DetalleCompra(props) {
 
   const navigation = useNavigation();
-  const {  errors: comprasErrors, updateCompra } = useCompras()
-  console.log("params",props.route.params.compra);
-  const {_id:id, anulado,repuestos} = props.route.params.compra
-
-  console.log("idd", id);
- 
-
-  // const getCompras = useCallback(async () => {
-  //   try {
-  //     const response = await axiosClient.get('/compras');
-  //     setCompras(response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // }, []);
-
-  // const getCompra = async (id) => {
-  //   try {
-  //     const response = await axiosClient.get(`/compras/${id}`);
-
-  //     setIsCanceled(response.data.anulado)
-  //     // Si el repuesto es un array, establece el nombre del primer repuesto en el estado
-  //     if (Array.isArray(response.data.repuestos) && response.data.repuestos.length > 0) {
-  //       setRepuestoName(response.data.repuestos[0].nombre_repuesto);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //   }
-  // };
-  
-  
-  // useEffect(() => {
-  //   // Llama a la función getCompras al cargar el componente
-    
-  //   console.log("id",props.route.params.compraId);
-  //   getCompras()
-  //   getCompra(props.route.params.compraId);
-  //   console.log("poesjfp");
-  // }, [getCompra(),props.route.params.compraId]);
+  const { errors: comprasErrors, updateCompra } = useCompras();
+  const { compra } = props.route.params;
+  const { _id: id, anulado, repuestos, proveedor, codigo, fecha } = compra;
 
   const onSubmit = async () => {
     try {
-       // eliminar si quiere avanzar a compras
-        await updateCompra(id)
-        navigation.navigate('compras')
-        Alert.alert("anulado")
-      
+      await updateCompra(id);
+      navigation.navigate('compras');
+      Alert.alert("Compra anulada con éxito");
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error al anular la compra:', error);
     }
-  }
+  };
 
   return (
-    <View>
-      <Text>{comprasErrors.map((error, i) => (
-        <Text style={styles.err} key={i}>
-          <Text> {error}</Text>
-        </Text>
-      ))} </Text>
-      <Text style={styles.titulo} >Detalle del producto</Text>
-
-      <Text style={styles.sub}>Nombre: {repuestos[0].nombre_repuesto}</Text>
-
-      {!anulado ?
-        <TouchableOpacity style={styles.BotonLista} onPress={() => onSubmit()}>
-        <Text style={styles.TextoNombre}>Eliminar</Text>
-      </TouchableOpacity>
-      : <Text>Eliminado</Text>
-}
-    </View>
-  )
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text>
+        {comprasErrors.map((error, i) => (
+          <Text style={styles.errorText} key={i}>
+            {error}
+          </Text>
+        ))}
+      </Text>
+      <Text style={styles.title}>Detalle del producto</Text>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.detailText}>Código: {codigo}</Text>
+        <Text style={styles.detailText}>Proveedor: {proveedor}</Text>
+        <Text style={styles.detailText}>Fecha: {moment(fecha).format('YYYY-MM-DD')}</Text>
+        <Text style={styles.detailText}>Total: {repuestos.map((i) => i.precio_total).join(', ')}</Text>
+        <Text style={styles.detailText}>Repuestos: {repuestos.map((i) => i.nombre_repuesto).join(', ')}</Text>
+      </View>
+      {!anulado ? (
+        <TouchableOpacity style={styles.deleteButton} onPress={onSubmit}>
+          <Text style={styles.deleteButtonText}>Anular Compra</Text>
+        </TouchableOpacity>
+      ) : (
+        <Text style={styles.deletedText}>Compra Anulada</Text>
+      )}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-  titulo: {
-    textAlign: 'center',
-    marginTop: 10,
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 10,
-    fontSize: 20
+    textAlign: 'center',
   },
-  sub: {
-    fontSize: 16
+  detailsContainer: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    width: '100%',
   },
-  err: {
-    "backgroundColor": "red",
-    "padding": 2,
-    "color": "white"
-
+  detailText: {
+    fontSize: 16,
+    marginBottom: 5,
   },
-
-  TextoNombre: {
+  errorText: {
+    backgroundColor: 'red',
+    padding: 5,
+    color: 'white',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  deleteButton: {
+    backgroundColor: '#2563EB',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  deletedText: {
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+    backgroundColor: "#ED8936",
     fontSize: 16,
     textAlign: 'center',
-    color: 'white',
-
+    
   },
-  BotonLista: {
-    backgroundColor: 'red',
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
-    marginBottom: 3,
-    padding: 5,
-    marginTop: 5
-  }
-})
+});

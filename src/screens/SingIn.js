@@ -1,12 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from "react-native";
 
-import axios from "axios";
 import React, { useContext, useState } from 'react'
 import { axiosClient } from "../api/axiosInstance";
-import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from "../context/AuthProvider";
-import Compras from "./Compras";
-import SingUP from "./SingUp";
 
 export default function SingnIn({navigation: {navigate}}) {
     const [email, setEmail] = useState("")
@@ -17,23 +13,29 @@ export default function SingnIn({navigation: {navigate}}) {
     const handleSubmit = async () => {
         try {
             if (email === "" || password === "") {
-                alert("todos los campos son requeridos");
+                alert("Todos los campos son requeridos");
                 return;
             }
     
             const response = await axiosClient.post("/login", { email, password });
-            if(response.data){
-                singIn()
-
+            if (!response.data) {
+                alert("Usuario/Contraseña incorrecto");
+                return;
             }
     
+            singIn();
             console.log(response.data);
-    
             alert(JSON.stringify(response.data));
         } catch (error) {
-            console.error(error);
+            if (error.response && error.response.status === 400) {
+                alert("Usuario/Contraseña incorrecto");
+            } else {
+                console.error(error);
+            }
         }
     }
+    
+    
     
 
 

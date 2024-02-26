@@ -40,8 +40,12 @@ export default function CreateCompras() {
           repuestos: repuestosData,
         }));
       } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+        if (error.response || error.response.status === 400  ) {
+            alert("Usuario/Contraseña incorrecto");
+        } else {
+            console.error(error);
+        }
+    }
     };
   
     fetchData();
@@ -69,10 +73,30 @@ export default function CreateCompras() {
 
   const saveProduct = async () => {
     try {
-      
+      const expresion = /^[0-9]+$/;
+      // Verificar si todos los campos están completos
+      if (!state.proveedor || !state.codigo || !state.cantidad || !state.precio_unitario) {
+        Alert.alert("Todos los campos son obligatorios");
+        return;
+      }
+      // Verificar si la cantidad no es un número
+      if (!expresion.test(state.cantidad)) {
+        Alert.alert("Cantidad debe ser un número entero");
+        return;
+      }
+      if (!expresion.test(state.precio_unitario)) {
+        Alert.alert("Precio unitario debe ser un número entero");
+        return;
+      }
       // Filtra solo los repuestos seleccionados
       const repuestosSeleccionados = state.repuestos.filter(repuesto => repuesto.selected);
-
+  
+      // Verificar si se ha seleccionado al menos un repuesto
+      if (repuestosSeleccionados.length === 0) {
+        Alert.alert("Debe seleccionar al menos un repuesto");
+        return;
+      }
+  
       // Crea un nuevo array con la información necesaria para el backend
       const repuestosParaEnviar = repuestosSeleccionados.map(repuesto => ({
         repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
@@ -82,28 +106,28 @@ export default function CreateCompras() {
         precio_total: state.precio_unitario * state.cantidad,
         // Puedes agregar más campos según lo que necesite tu backend
       }));
-
+  
       const datosParaEnviar = {
         repuestos: repuestosParaEnviar,
         proveedor: state.proveedor,
         codigo: state.codigo,
         fecha: state.fecha,
       };
-
+  
       const response = await axiosClient.post("/compras", datosParaEnviar);
       console.log("Producto guardado:", response.data);
-
+  
       if(response){
         navigation.navigate('compras');
         setState(initialState);
-        Alert.alert("agregado")
+        Alert.alert("Compra guardada exitosamente");
       }
-
-    
     } catch (error) {
       console.error("Error al guardar la compra:", error);
+      Alert.alert("Error al guardar la compra");
     }
   };
+  
 
   const handleRepuestoSelection = (repuesto) => {
     // Desmarca todos los repuestos
@@ -129,6 +153,7 @@ export default function CreateCompras() {
           placeholder="Proveedor"
           onChangeText={(value) => handleChangeText(value, "proveedor")}
           value={state.proveedor}
+          required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
@@ -136,6 +161,7 @@ export default function CreateCompras() {
           placeholder="Codigo"
           onChangeText={(value) => handleChangeText(value, "codigo")}
           value={state.codigo}
+          required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
@@ -163,6 +189,7 @@ export default function CreateCompras() {
           placeholder="Cantidad"
           onChangeText={(value) => handleChangeText(value, "cantidad")}
           value={state.cantidad}
+          required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
@@ -170,6 +197,7 @@ export default function CreateCompras() {
           placeholder="Precio Unitario"
           onChangeText={(value) => handleChangeText(value, "precio_unitario")}
           value={state.precio_unitario}
+          required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>

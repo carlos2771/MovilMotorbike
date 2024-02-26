@@ -33,7 +33,7 @@ export default function Compras({ navigation }) {
   }, [navigation, getCompras]);
 
   const onPressItem = (item) => {
-    navigation.navigate("detalle", {compra: {item} } );
+    navigation.navigate("detalle", {compra: {...item} } );
   };
 
   const goToCreateCompras = () => {
