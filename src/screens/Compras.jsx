@@ -48,9 +48,11 @@ export default function Compras({ navigation }) {
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <Button title="Create Compras" onPress={goToCreateCompras} />
-      <TextInput
+        
+      <TextInput 
         style={styles.searchInput}
         placeholder="Codigo..."
+        placeholderTextColor="white"
         onChangeText={text => setSearchTerm(text)}
         value={searchTerm}
       />
@@ -91,6 +93,10 @@ export default function Compras({ navigation }) {
 
 const styles = StyleSheet.create({
 
+  codigo:{
+    color:"white",
+    textAlign:"right"
+  },
   err: {
     backgroundColor: "red",
     padding: 2,
@@ -107,6 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 10,
+    backgroundColor: "#1E293B"
   },
 
   searchInput: {
@@ -117,6 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: 100,
     marginLeft:270,
-    marginTop:5
+    marginTop:5,
+    
   },
 });

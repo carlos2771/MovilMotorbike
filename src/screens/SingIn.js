@@ -1,9 +1,7 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from "react-native";
-
-import React, { useContext, useState } from 'react'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from "react-native";
+import React, { useContext, useState } from 'react';
 import { axiosClient } from "../api/axiosInstance";
 import { AuthContext } from "../context/AuthProvider";
-
 export default function SingnIn({navigation: {navigate}}) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -24,8 +22,8 @@ export default function SingnIn({navigation: {navigate}}) {
             }
     
             singIn();
-            console.log(response.data);
-            alert(JSON.stringify(response.data));
+            console.log("usuario",response.data);
+            alert(`Bienvenido ${JSON.stringify(response.data.username)}`);
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 alert("Usuario/Contraseña incorrecto");
@@ -34,67 +32,65 @@ export default function SingnIn({navigation: {navigate}}) {
             }
         }
     }
-    
-    
-    
 
-
-  return (
-    <View style={styles.container}>
-        <Text>{auth ? "true": "false"}</Text>
-        <Text style={styles.signupText}>Iniciar Secion</Text>
-        <View style={{marginHorizontal:24}}>
-            <Text style={{fontSize:16, color: "#8e93a1",}}>Correo</Text>
-            <TextInput style={styles.signupInput} value={email} onChangeText={text => setEmail(text)} autoCompleteType="email" keyboardType="email-address"/>
-        </View>
-        <View style={{marginHorizontal:24}}>
-            <Text style={{fontSize:16, color: "#8e93a1",}}>Contraseña</Text>
-            <TextInput style={styles.signupInput} value={password} onChangeText={text => setPassword(text)} secureTextEntry={true} autoComplete="password"/>
-        </View>
-        <TouchableOpacity onPress={handleSubmit} style={styles.buttonStyle}>
-            <Text style={styles.buttonText}>Enviar</Text>
-        </TouchableOpacity>
-        <Text style={{marginHorizontal: 24}}>{JSON.stringify({email,password})}</Text>
-       
-    </View>
-  )
-  
+    return (
+        <ImageBackground source={require('../images/llave.jpg')} style={styles.backgroundImage} resizeMode="cover">
+            <View style={styles.container}>
+                <Text style={styles.signupText}>Iniciar Sesión</Text>
+                <View style={{ marginHorizontal: 24 }}>
+                    <Text style={{ fontSize: 22, color: "white" }}>Correo</Text>
+                    <TextInput style={styles.signupInput} value={email} onChangeText={text => setEmail(text)} autoCompleteType="email" keyboardType="email-address" />
+                </View>
+                <View style={{ marginHorizontal: 24 }}>
+                    <Text style={{ fontSize: 22, color: "white" }}>Contraseña</Text>
+                    <TextInput style={styles.signupInput} value={password} onChangeText={text => setPassword(text)} secureTextEntry={true} autoComplete="password" />
+                </View>
+                <TouchableOpacity onPress={handleSubmit} style={styles.buttonStyle}>
+                    <Text style={styles.buttonText}>Ingresar</Text>
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
+    );
 }
 
-
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
+    backgroundImage: {
+        flex: 1,
+        resizeMode: "cover",
         justifyContent: "center",
-       
+        backgroundColor: "#21618C",
+        
     },
-    signupText:{
-        fontSize: 30,
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 24 // Añadido un padding horizontal para mejorar la apariencia
+    },
+    signupText: {
+        fontSize: 36,
         textAlign: "center",
-    
-        
+        color: "#fff"
     },
-    signupInput:{
-        borderBottomWidth: 0.5,
+    signupInput: {
+        fontSize: 20,
+        borderBottomWidth: 2,
         height: 48,
-        borderBottomColor: "#8e93a1",
+        borderBottomColor: "#3498DB",
         marginBottom: 30,
-        
+        color: "#fff"
     },
-    buttonStyle:{
-        backgroundColor: "darkmagenta",
+    buttonStyle: {
+        backgroundColor: "#3498DB",
         height: 50,
         marginBottom: 20,
         justifyContent: "center",
-        marginHorizontal: 15,
         borderRadius: 15,
     },
-    buttonText:{
+    buttonText: {
         fontSize: 20,
         textAlign: "center",
         color: "#fff",
         textTransform: "uppercase",
         fontWeight: "bold"
     }
-    
-})
+});

@@ -14,7 +14,7 @@ const getCartClient = async() =>{
   .catch((error) => console.error(error))
 }
 
-console.log(compras)
+console.log("Compras1232345",compras)
 
 useEffect(()=>{
   getCartClient()
