@@ -7,14 +7,14 @@ import CardCompras from '../components/card/CardCompras';
 
 
 export default function CartClientes() {
-const [compras, setCompras] = useState()
+const [clientes, setClientes] = useState()
 
 const getCartClient = async() =>{
-  return await axiosClient.get("/cart-cliente").then(({data})=>setCompras(data))
+  return await axiosClient.get("/cart-cliente").then(({data})=>setClientes(data))
   .catch((error) => console.error(error))
 }
 
-console.log("Compras1232345",compras)
+console.log("Compras1232345",clientes)
 
 useEffect(()=>{
   getCartClient()
@@ -22,7 +22,7 @@ useEffect(()=>{
    return (
     <View style={styles.container}>
       <FlatList
-      data={compras}
+      data={clientes}
       keyExtractor={(item) => item._id}
       renderItem={({item}) =>{
         const namesArray = item.cart.map(i => i.name)
