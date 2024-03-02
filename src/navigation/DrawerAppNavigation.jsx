@@ -9,7 +9,7 @@ const Drawer = createDrawerNavigator()
 export default function DrawerAppNavigation() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="comprasStack" component={StackCompras}/>
+      <Drawer.Screen name="compras" component={StackCompras}/>
       <Drawer.Screen name="clientes" component={Clientes}/>
       <Drawer.Screen name="detalle" component={DetalleCompra}/>
       

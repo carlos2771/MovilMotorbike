@@ -9,8 +9,8 @@ export default function StackCompras() {
     return (
     
 
-   <Stack.Navigator initialRouteName="compras" screenOptions={{headerShown:false}}>
-    <Stack.Screen name="compras" component={Compras}/>
+   <Stack.Navigator initialRouteName="comprasStack" screenOptions={{headerShown:false}}>
+    <Stack.Screen name="comprasStack" component={Compras}/>
         <Stack.Screen name="createCompras" component={CreateCompras}/>
        
    </Stack.Navigator>

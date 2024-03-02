@@ -6,14 +6,13 @@ import {
   TextInput,
   StyleSheet,
   Button,
-  FlatList,
-  DatePickerIOS,
   Alert
 } from "react-native";
 import axios from "axios";
 import { axiosClient } from "../api/axiosInstance";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import SelectDropdown from 'react-native-select-dropdown'
 
 
 export default function CreateCompras() {
@@ -147,12 +146,13 @@ export default function CreateCompras() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text>Crear Compra</Text>
+      <Text style={styles.signupText}>Crear Compra</Text>
       <View style={styles.inputgroup}>
         <TextInput
           placeholder="Proveedor"
           onChangeText={(value) => handleChangeText(value, "proveedor")}
           value={state.proveedor}
+          style={{ fontSize: 17 }}
           required // Campo requerido
         />
       </View>
@@ -161,34 +161,31 @@ export default function CreateCompras() {
           placeholder="Codigo"
           onChangeText={(value) => handleChangeText(value, "codigo")}
           value={state.codigo}
+          style={{ fontSize: 17 }}
           required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
-        <View style={styles.list}>
-        <Text>Repuestos disponibles:</Text>
-        <FlatList
-          data={state.repuestos}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <Text
-              style={{
-                color: item.selected ? "blue" : "black",
-                fontWeight: item.selected ? "bold" : "normal",
-              }}
-              onPress={() => handleRepuestoSelection(item)}
-            >
-              {item.name}
-            </Text>
-          )}
+        
+        <SelectDropdown  style={{ fontSize: 16 }}
+          data={state.repuestos.map(repuesto => repuesto.name)}
+          onSelect={(selectedItem, index) => handleRepuestoSelection(state.repuestos[index])}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            return <Text >{item}</Text>;
+          }}
+          defaultButtonText="Seleccione repuesto"
+          
         />
-        </View>
       </View>
       <View style={styles.inputgroup}>
         <TextInput
           placeholder="Cantidad"
           onChangeText={(value) => handleChangeText(value, "cantidad")}
           value={state.cantidad}
+          style={{ fontSize: 17 }}
           required // Campo requerido
         />
       </View>
@@ -197,11 +194,14 @@ export default function CreateCompras() {
           placeholder="Precio Unitario"
           onChangeText={(value) => handleChangeText(value, "precio_unitario")}
           value={state.precio_unitario}
+          style={{ fontSize: 17 }}
           required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
-        <Text>Fecha seleccionada: {state.fecha.toDateString()}</Text>
+        <Text
+        style={{ fontSize: 17 }}
+        >Fecha seleccionada: {state.fecha.toDateString()}</Text>
         <Button title="Seleccionar Fecha" onPress={showDatePicker} />
         {state.showDatePicker && (
           <DateTimePicker
@@ -226,13 +226,18 @@ const styles = StyleSheet.create({
   },
   inputgroup: {
     flex: 1,
-    
     padding: 0,
     marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
+    
   },
-  list: {
-    maxHeight:100
-  }
+  signupText: {
+    fontSize: 22,
+    marginBottom:20,
+    textAlign: "center",
+    color: "black"
+},
+ 
+  
 });
