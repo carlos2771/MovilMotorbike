@@ -9,14 +9,13 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
-import {AntDesign} from "react-native-vector-icons"
+import { AntDesign } from "react-native-vector-icons";
 import axios from "axios";
 import { axiosClient } from "../api/axiosInstance";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
-import { useCompras } from "../context/ComprasContext"; 
-
+import { useCompras } from "../context/ComprasContext";
 
 export default function CreateCompras() {
   const initialState = {
@@ -29,8 +28,10 @@ export default function CreateCompras() {
   };
   const [state, setState] = useState(initialState);
   const [selectedRepuesto, setSelectedRepuesto] = useState(null);
+  const [isTypingProveedor, setIsTypingProveedor] = useState(false); // Nuevo estado
   const navigation = useNavigation();
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
+  const [buttonHidden, setButtonHidden] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +56,13 @@ export default function CreateCompras() {
     fetchData();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     try {
-      getCompras()
+      getCompras();
     } catch (error) {
-      console.log(error,"error de compras ");
+      console.log(error, "error de compras ");
     }
-  },[])
+  }, []);
 
   const handleChangeText = (value, name) => {
     setState({ ...state, [name]: value });
@@ -112,7 +113,7 @@ export default function CreateCompras() {
         Alert.alert("Debe seleccionar al menos un repuesto");
         return;
       }
-
+      setButtonHidden(true);
       // Crea un nuevo array con la información necesaria para el backend
       const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
         repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
@@ -158,22 +159,39 @@ export default function CreateCompras() {
     }));
 
     setState({ ...state, repuestos: repuestosActualizados });
-};
+  };
 
-  
   // Filtra los proveedores únicos
-  const proveedoresUnicos = Array.from(new Set(compras.map((proveedor) => proveedor.proveedor)));
+  const proveedoresUnicos = Array.from(
+    new Set(compras.map((proveedor) => proveedor.proveedor))
+  );
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.signupText}>Crear Compra</Text>
       <View style={styles.inputgroup}>
-        <SelectDropdown
-          style={{ fontSize: 16 }}
-          data={proveedoresUnicos}
-          defaultButtonText="Seleccione proveedor"
-          onSelect={(selectedItem, index) => handleChangeText(selectedItem, "proveedor")}
-        />
+        {isTypingProveedor ? (
+          <TextInput
+            placeholder="Proveedor"
+            onChangeText={(value) => handleChangeText(value, "proveedor")}
+            value={state.proveedor}
+            style={{ fontSize: 17 }}
+          />
+        ) : (
+          <SelectDropdown
+            style={{ fontSize: 16 }}
+            data={proveedoresUnicos}
+            defaultButtonText="Seleccione proveedor"
+            onSelect={(selectedItem, index) =>
+              handleChangeText(selectedItem, "proveedor")
+            }
+          />
+        )}
+        <TouchableOpacity
+          onPress={() => setIsTypingProveedor(!isTypingProveedor)}
+        >
+          <Text>{isTypingProveedor ? "Seleccionar de la lista" : "Escribir nuevo"}</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.inputgroup}>
         <TextInput
@@ -212,10 +230,13 @@ export default function CreateCompras() {
       <View style={styles.inputgroup}>
         <TextInput
           placeholder="Precio Unitario"
-          onChangeText={(value) => handleChangeText(value, "precio_unitario")}
+          onChangeText={(value) =>
+            handleChangeText(value.replace(/[^0-9]/g, ""), "precio_unitario")
+          }
           value={state.precio_unitario}
           style={{ fontSize: 17 }}
           required // Campo requerido
+          keyboardType="numeric" // Solo permite números
         />
       </View>
       <View style={styles.inputgroup}>
@@ -223,7 +244,9 @@ export default function CreateCompras() {
           Fecha seleccionada: {state.fecha.toDateString()}
         </Text>
         <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
-          <Text style={styles.buttonText}><AntDesign name="calendar" style={styles.date}/></Text>
+          <Text style={styles.buttonText}>
+            <AntDesign name="calendar" style={styles.date} />
+          </Text>
         </TouchableOpacity>
         {state.showDatePicker && (
           <DateTimePicker
@@ -236,12 +259,15 @@ export default function CreateCompras() {
       </View>
 
       <View>
-        <Button title="Guardar Producto" onPress={saveProduct} />
+        {buttonHidden ? (
+          <Text>Cargando..</Text>
+        ) : (
+          <Button title="Guardar Producto" onPress={saveProduct} />
+        )}
       </View>
     </ScrollView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -259,17 +285,15 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginBottom: 20,
     textAlign: "center",
-    color: "black"
+    color: "black",
   },
   dateButton: {
-    
     borderRadius: 20, // Define el radio del botón para que sea redondo
-    
-    width:90
+    width: 90,
   },
   buttonText: {
     fontSize: 37,
     color: "white",
   },
-  date:{fontSize: 30, color:"black", }
+  date: { fontSize: 30, color: "black" },
 });
