@@ -5,6 +5,9 @@ import CardCompras from '../components/card/CardCompras';
 import { useNavigation } from '@react-navigation/native';
 import { useCompras } from "../context/ComprasContext";
 import moment from 'moment';
+import tw from 'twrnc'
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 export default function Compras({ navigation }) {
  
@@ -44,27 +47,31 @@ export default function Compras({ navigation }) {
     return item.codigo.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button title="Create Compras" onPress={goToCreateCompras} />
-        
-      <TextInput 
-        style={styles.searchInput}
-        placeholder="Codigo..."
-        placeholderTextColor="white"
-        onChangeText={text => setSearchTerm(text)}
-        value={searchTerm}
-      />
-      </View>
-      <View>
+    return (
+      <LinearGradient colors={['#1E293B', '#0f172a', '#1E293B']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
+      style={[tw`flex-1 items-center p-4`]}
+    >
+        <View style={tw`w-full flex-row justify-between mb-4`}>
+        <TextInput
+            style={tw`h-10 border border-white rounded px-2 text-white w-40`}
+            placeholder="Codigo..."
+            placeholderTextColor="white"
+            onChangeText={text => setSearchTerm(text)}
+            value={searchTerm}
+          />
+
+          <TouchableOpacity style={tw`w-10 h-10 rounded-full bg-sky-500 mr-5`} onPress={goToCreateCompras}><Text style={tw`text-center mt-1 text-white font-semibold text-xl`}>+</Text></TouchableOpacity>
+          
+        </View>
         <Text>{comprasErrors.map((error, i) => (
-          <Text style={styles.err} key={i}>
-            <Text> {error}</Text>
+          <Text style={tw`bg-red-500 p-2 text-white`} key={i}>
+            {error}
           </Text>
-        ))} </Text>
+        ))}</Text>
         <FlatList
-          style={styles.cart}
+          style={tw`w-full shadow-blue-600/40`}
           data={filteredCompras}
           keyExtractor={(item) => item._id}
           numColumns={2}
@@ -86,45 +93,50 @@ export default function Compras({ navigation }) {
             );
           }}
         />
-      </View>
-    </View>
-  );
-}
+      </LinearGradient>
+    );
+  }
 
-const styles = StyleSheet.create({
+  const style = StyleSheet.create({
+    button:{
+      borderRadius: 999
+    }
+  });
 
-  codigo:{
-    color:"white",
-    textAlign:"right"
-  },
-  err: {
-    backgroundColor: "red",
-    padding: 2,
-    color: "white"
-  },
+// const styles = StyleSheet.create({
 
-  buttonContainer: {
-    width: '100%',
-    paddingHorizontal: 10,
+//   codigo:{
+//     color:"white",
+//     textAlign:"right"
+//   },
+//   err: {
+//     backgroundColor: "red",
+//     padding: 2,
+//     color: "white"
+//   },
+
+//   buttonContainer: {
+//     width: '100%',
+//     paddingHorizontal: 10,
     
-  },
+//   },
 
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: "#1E293B"
-  },
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     padding: 10,
+//     backgroundColor: "#1E293B"
+//   },
 
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    width: 100,
-    marginLeft:270,
-    marginTop:5,
+//   searchInput: {
+//     height: 40,
+//     borderColor: 'gray',
+//     borderWidth: 1,
+//     marginBottom: 10,
+//     paddingHorizontal: 10,
+//     width: 100,
+//     marginLeft:270,
+//     marginTop:5,
     
-  },
-});
+//   },
+// });

@@ -13,7 +13,8 @@ import { axiosClient } from "../api/axiosInstance";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import SelectDropdown from 'react-native-select-dropdown'
-
+import tw from 'twrnc'
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function CreateCompras() {
   const initialState = {
@@ -145,6 +146,11 @@ export default function CreateCompras() {
   };
 
   return (
+    <LinearGradient colors={['#1E293B', '#0f172a', '#1E293B']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
+      style={[tw`flex-1 items-center p-4`]}
+    >
     <ScrollView style={styles.container}>
       <Text style={styles.signupText}>Crear Compra</Text>
       <View style={styles.inputgroup}>
@@ -152,7 +158,7 @@ export default function CreateCompras() {
           placeholder="Proveedor"
           onChangeText={(value) => handleChangeText(value, "proveedor")}
           value={state.proveedor}
-          style={{ fontSize: 17 }}
+          style={tw`text-lg text-white`}
           required // Campo requerido
         />
       </View>
@@ -161,7 +167,7 @@ export default function CreateCompras() {
           placeholder="Codigo"
           onChangeText={(value) => handleChangeText(value, "codigo")}
           value={state.codigo}
-          style={{ fontSize: 17 }}
+          style={tw`text-lg text-white`}
           required // Campo requerido
         />
       </View>
@@ -185,7 +191,7 @@ export default function CreateCompras() {
           placeholder="Cantidad"
           onChangeText={(value) => handleChangeText(value, "cantidad")}
           value={state.cantidad}
-          style={{ fontSize: 17 }}
+          style={tw`text-lg text-white`}
           required // Campo requerido
         />
       </View>
@@ -194,14 +200,14 @@ export default function CreateCompras() {
           placeholder="Precio Unitario"
           onChangeText={(value) => handleChangeText(value, "precio_unitario")}
           value={state.precio_unitario}
-          style={{ fontSize: 17 }}
+          style={tw`text-lg text-white`}
           required // Campo requerido
         />
       </View>
       <View style={styles.inputgroup}>
         <Text
-        style={{ fontSize: 17 }}
-        >Fecha seleccionada: {state.fecha.toDateString()}</Text>
+        style={tw`text-lg text-white`}
+        >Fecha seleccionada: {'\n'}{state.fecha.toDateString()}</Text>
         <Button title="Seleccionar Fecha" onPress={showDatePicker} />
         {state.showDatePicker && (
           <DateTimePicker
@@ -216,6 +222,7 @@ export default function CreateCompras() {
         <Button title="Guardar Producto" onPress={saveProduct} />
       </View>
     </ScrollView>
+    </LinearGradient>
   );
 }
 
@@ -230,14 +237,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
-    
+    width: 250
   },
   signupText: {
     fontSize: 22,
     marginBottom:20,
     textAlign: "center",
-    color: "black"
+    color: "white"
 },
+  inputText: {
+    color: 'white'
+  }
  
   
 });

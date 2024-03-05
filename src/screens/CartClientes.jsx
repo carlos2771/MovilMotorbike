@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from "r
 import { axiosClient } from '../api/axiosInstance';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import CardCompras from '../components/card/CardCompras';
-
+import tw from 'twrnc'
 
 
 export default function CartClientes() {
@@ -20,7 +20,7 @@ useEffect(()=>{
   getCartClient()
 },[])
    return (
-    <View style={styles.container}>
+    <View style={tw`bg-red-300`}>
       <FlatList
       data={clientes}
       keyExtractor={(item) => item._id}
@@ -35,9 +35,9 @@ useEffect(()=>{
     </View>
   )
 }
-const styles = StyleSheet.create({
-  container: {
-      flex: 1,
-      backgroundColor: '#fff',
-  },
-})
+// const styles = StyleSheet.create({
+//   container: {
+//       flex: 1,
+//       backgroundColor: '#fff',
+//   },
+// })

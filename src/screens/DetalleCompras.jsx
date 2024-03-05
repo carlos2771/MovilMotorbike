@@ -4,6 +4,8 @@ import { axiosClient } from "../api/axiosInstance";
 import { useNavigation } from '@react-navigation/native';
 import { useCompras } from "../context/ComprasContext";
 import moment from 'moment';
+import tw from 'twrnc'
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function DetalleCompra(props) {
 
@@ -23,6 +25,11 @@ export default function DetalleCompra(props) {
   };
 
   return (
+    <LinearGradient colors={['#1E293B', '#0f172a', '#1E293B']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
+      style={[tw`flex-1 items-center p-4`]}
+    >
     <ScrollView contentContainerStyle={styles.container}>
       <Text>
         {comprasErrors.map((error, i) => (
@@ -31,22 +38,23 @@ export default function DetalleCompra(props) {
           </Text>
         ))}
       </Text>
-      <Text style={styles.title}>Detalle del producto</Text>
-      <View style={styles.detailsContainer}>
-        <Text style={styles.detailText}>Código: {codigo}</Text>
-        <Text style={styles.detailText}>Proveedor: {proveedor}</Text>
-        <Text style={styles.detailText}>Fecha: {moment(fecha).format('YYYY-MM-DD')}</Text>
-        <Text style={styles.detailText}>Total: {repuestos.map((i) => i.precio_total).join(', ')}</Text>
-        <Text style={styles.detailText}>Repuestos: {repuestos.map((i) => i.nombre_repuesto).join(', ')}</Text>
+      <Text style={tw`text-white text-3xl`}>Detalle de compra</Text>
+      <View style={tw`bg-slate-700 p-10 m-5 rounded-lg shadow shadow-2xl shadow-blue-500`}>
+        <Text style={tw`text-white text-lg`}>Código: {codigo}</Text>
+        <Text style={tw`text-white text-lg`}>Proveedor: {proveedor}</Text>
+        <Text style={tw`text-white text-lg`}>Fecha: {moment(fecha).format('YYYY-MM-DD')}</Text>
+        <Text style={tw`text-white text-lg`}>Total: {repuestos.map((i) => i.precio_total).join(', ')}</Text>
+        <Text style={tw`text-white text-lg`}>Repuestos: {repuestos.map((i) => i.nombre_repuesto).join(', ')}</Text>
       </View>
       {!anulado ? (
-        <TouchableOpacity style={styles.deleteButton} onPress={onSubmit}>
-          <Text style={styles.deleteButtonText}>Anular Compra</Text>
+        <TouchableOpacity style={tw`w-59 bg-indigo-600 py-2 px-2 text-center`} onPress={onSubmit}>
+          <Text style={tw`text-center text-white text-lg`}>Anular Compra</Text>
         </TouchableOpacity>
       ) : (
-        <Text style={styles.deletedText}>Compra Anulada</Text>
+        <Text style={tw`text-center text-white text-lg bg-orange-500 py-2 px-2 w-59`}>Compra Anulada</Text>
       )}
     </ScrollView>
+    </LinearGradient>
   );
 }
 
