@@ -123,8 +123,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     width: 100,
-    marginLeft:270,
+    marginLeft:220,
     marginTop:5,
+    color:"white"
     
   },
 });

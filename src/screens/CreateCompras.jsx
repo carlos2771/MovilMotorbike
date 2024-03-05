@@ -6,13 +6,16 @@ import {
   TextInput,
   StyleSheet,
   Button,
-  Alert
+  Alert,
+  TouchableOpacity,
 } from "react-native";
+import {AntDesign} from "react-native-vector-icons"
 import axios from "axios";
 import { axiosClient } from "../api/axiosInstance";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
-import SelectDropdown from 'react-native-select-dropdown'
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useNavigation } from "@react-navigation/native";
+import SelectDropdown from "react-native-select-dropdown";
+import { useCompras } from "../context/ComprasContext"; 
 
 
 export default function CreateCompras() {
@@ -27,31 +30,38 @@ export default function CreateCompras() {
   const [state, setState] = useState(initialState);
   const [selectedRepuesto, setSelectedRepuesto] = useState(null);
   const navigation = useNavigation();
-
+  const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosClient.get("/repuestos");
-        const repuestosData = response.data.filter(repuesto => repuesto.estado === "Activo"); // Filtrar por estado "Activo"
+        const repuestosData = response.data.filter(
+          (repuesto) => repuesto.estado === "Activo"
+        ); // Filtrar por estado "Activo"
         setState((prevState) => ({
           ...prevState,
           repuestos: repuestosData,
         }));
       } catch (error) {
-        if (error.response || error.response.status === 400  ) {
-            alert("Usuario/Contraseña incorrecto");
+        if (error.response || error.response.status === 400) {
+          alert("Usuario/Contraseña incorrecto");
         } else {
-            console.error(error);
+          console.error(error);
         }
-    }
+      }
     };
-  
+
     fetchData();
   }, []);
-  
 
-  
+  useEffect(()=>{
+    try {
+      getCompras()
+    } catch (error) {
+      console.log(error,"error de compras ");
+    }
+  },[])
 
   const handleChangeText = (value, name) => {
     setState({ ...state, [name]: value });
@@ -74,7 +84,12 @@ export default function CreateCompras() {
     try {
       const expresion = /^[0-9]+$/;
       // Verificar si todos los campos están completos
-      if (!state.proveedor || !state.codigo || !state.cantidad || !state.precio_unitario) {
+      if (
+        !state.proveedor ||
+        !state.codigo ||
+        !state.cantidad ||
+        !state.precio_unitario
+      ) {
         Alert.alert("Todos los campos son obligatorios");
         return;
       }
@@ -88,16 +103,18 @@ export default function CreateCompras() {
         return;
       }
       // Filtra solo los repuestos seleccionados
-      const repuestosSeleccionados = state.repuestos.filter(repuesto => repuesto.selected);
-  
+      const repuestosSeleccionados = state.repuestos.filter(
+        (repuesto) => repuesto.selected
+      );
+
       // Verificar si se ha seleccionado al menos un repuesto
       if (repuestosSeleccionados.length === 0) {
         Alert.alert("Debe seleccionar al menos un repuesto");
         return;
       }
-  
+
       // Crea un nuevo array con la información necesaria para el backend
-      const repuestosParaEnviar = repuestosSeleccionados.map(repuesto => ({
+      const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
         repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
         nombre_repuesto: repuesto.name,
         cantidad_repuesto: state.cantidad,
@@ -105,19 +122,19 @@ export default function CreateCompras() {
         precio_total: state.precio_unitario * state.cantidad,
         // Puedes agregar más campos según lo que necesite tu backend
       }));
-  
+
       const datosParaEnviar = {
         repuestos: repuestosParaEnviar,
         proveedor: state.proveedor,
         codigo: state.codigo,
         fecha: state.fecha,
       };
-  
+
       const response = await axiosClient.post("/compras", datosParaEnviar);
       console.log("Producto guardado:", response.data);
-  
-      if(response){
-        navigation.navigate('compras');
+
+      if (response) {
+        navigation.navigate("comprasStack");
         setState(initialState);
         Alert.alert("Compra guardada exitosamente");
       }
@@ -126,34 +143,36 @@ export default function CreateCompras() {
       Alert.alert("Error al guardar la compra");
     }
   };
-  
 
   const handleRepuestoSelection = (repuesto) => {
     // Desmarca todos los repuestos
-    const repuestosDesmarcados = state.repuestos.map(r => ({
+    const repuestosDesmarcados = state.repuestos.map((r) => ({
       ...r,
       selected: false,
     }));
 
     // Encuentra el repuesto seleccionado y márcalo
-    const repuestosActualizados = repuestosDesmarcados.map(r => ({
+    const repuestosActualizados = repuestosDesmarcados.map((r) => ({
       ...r,
       selected: r._id === repuesto._id ? true : r.selected,
     }));
 
     setState({ ...state, repuestos: repuestosActualizados });
-  };
+};
+
+  
+  // Filtra los proveedores únicos
+  const proveedoresUnicos = Array.from(new Set(compras.map((proveedor) => proveedor.proveedor)));
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.signupText}>Crear Compra</Text>
       <View style={styles.inputgroup}>
-        <TextInput
-          placeholder="Proveedor"
-          onChangeText={(value) => handleChangeText(value, "proveedor")}
-          value={state.proveedor}
-          style={{ fontSize: 17 }}
-          required // Campo requerido
+        <SelectDropdown
+          style={{ fontSize: 16 }}
+          data={proveedoresUnicos}
+          defaultButtonText="Seleccione proveedor"
+          onSelect={(selectedItem, index) => handleChangeText(selectedItem, "proveedor")}
         />
       </View>
       <View style={styles.inputgroup}>
@@ -166,18 +185,19 @@ export default function CreateCompras() {
         />
       </View>
       <View style={styles.inputgroup}>
-        
-        <SelectDropdown  style={{ fontSize: 16 }}
-          data={state.repuestos.map(repuesto => repuesto.name)}
-          onSelect={(selectedItem, index) => handleRepuestoSelection(state.repuestos[index])}
+        <SelectDropdown
+          style={{ fontSize: 16 }}
+          data={state.repuestos.map((repuesto) => repuesto.name)}
+          onSelect={(selectedItem, index) =>
+            handleRepuestoSelection(state.repuestos[index])
+          }
           buttonTextAfterSelection={(selectedItem, index) => {
             return selectedItem;
           }}
           rowTextForSelection={(item, index) => {
-            return <Text >{item}</Text>;
+            return <Text>{item}</Text>;
           }}
           defaultButtonText="Seleccione repuesto"
-          
         />
       </View>
       <View style={styles.inputgroup}>
@@ -199,10 +219,12 @@ export default function CreateCompras() {
         />
       </View>
       <View style={styles.inputgroup}>
-        <Text
-        style={{ fontSize: 17 }}
-        >Fecha seleccionada: {state.fecha.toDateString()}</Text>
-        <Button title="Seleccionar Fecha" onPress={showDatePicker} />
+        <Text style={{ fontSize: 17 }}>
+          Fecha seleccionada: {state.fecha.toDateString()}
+        </Text>
+        <TouchableOpacity style={styles.dateButton} onPress={showDatePicker}>
+          <Text style={styles.buttonText}><AntDesign name="calendar" style={styles.date}/></Text>
+        </TouchableOpacity>
         {state.showDatePicker && (
           <DateTimePicker
             value={state.fecha}
@@ -212,12 +234,14 @@ export default function CreateCompras() {
           />
         )}
       </View>
+
       <View>
         <Button title="Guardar Producto" onPress={saveProduct} />
       </View>
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -230,14 +254,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
-    
   },
   signupText: {
     fontSize: 22,
-    marginBottom:20,
+    marginBottom: 20,
     textAlign: "center",
     color: "black"
-},
- 
-  
+  },
+  dateButton: {
+    
+    borderRadius: 20, // Define el radio del botón para que sea redondo
+    
+    width:90
+  },
+  buttonText: {
+    fontSize: 37,
+    color: "white",
+  },
+  date:{fontSize: 30, color:"black", }
 });

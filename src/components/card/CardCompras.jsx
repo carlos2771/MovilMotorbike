@@ -8,7 +8,7 @@ export default function CardCompras({repuestos,fechaCreacion, proveedor, total, 
         <Text style={styles.textos}>Proveedor:{proveedor}</Text>
         <Text style={styles.textos}>Total:{total}</Text>
         <Text style={styles.textos}>Fecha:{fecha}</Text>
-        <Text style={styles.textos}>Repuesto:{repuestos}</Text>
+        {/* <Text style={styles.textos}>Repuesto:{repuestos}</Text> */}
     </View>
   )
 }
