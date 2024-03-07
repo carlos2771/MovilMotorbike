@@ -10,8 +10,14 @@ const Drawer = createDrawerNavigator()
 
 export default function DrawerAppNavigation() {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="compras" component={StackCompras} />
+    <Drawer.Navigator
+    screenOptions={{
+      drawerStyle: {
+        // backgroundColor: 'rgb(059, 128, 176, 0.9)',
+        width: 240,
+      },
+    }}>
+      <Drawer.Screen name="compras" component={StackCompras}/>
       <Drawer.Screen name="clientes" component={Clientes}/>
       <Drawer.Screen name="detalle" component={DetalleCompra}/>
       
