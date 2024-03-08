@@ -84,8 +84,8 @@ export default function Compras({ navigation }) {
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
         <TextInput
-          style={tw`h-10 text-white w-full`}
-          placeholder=" Codigo..."
+          style={tw`h-10 text-white w-full ml-2`}
+          placeholder=" Buscar"
           placeholderTextColor="white"
           onChangeText={(text) => setSearchTerm(text)}
           value={searchTerm}
