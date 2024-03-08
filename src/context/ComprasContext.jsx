@@ -26,7 +26,6 @@ export function CompraProvider({ children }) {
   const getCompras = async () => {
     try {
       const res = await getComprasRequest();
-      console.log(res);
       setCompras(res);
     } catch (error) {
       console.error(error);
@@ -39,7 +38,6 @@ export function CompraProvider({ children }) {
       // console.log("ventas:", response);
     } catch (error) {
       setErrors(error.response.data.message);
-      console.log(error);
     }
   };
 
@@ -56,7 +54,6 @@ export function CompraProvider({ children }) {
     try {
       return await updateComprasRequest(id, compra ?? {});
     } catch (error) {
-      console.error(error);
       setErrors(error.response.data.message);
     }
   };
@@ -64,7 +61,6 @@ export function CompraProvider({ children }) {
   const deleteCompra = async (id) => {
     try {
       const res = await deleteComprasRequest(id);
-      console.log(res);
       if (res.status === 204) {
         setCompras(compras.filter((compra) => compra._id !== id));
       }

@@ -25,6 +25,7 @@ import {
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 
+
 export default function Compras({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
@@ -37,13 +38,12 @@ export default function Compras({ navigation }) {
   //     console.error('Error fetching data:', error);
   //   }
   // }, []);
-  console.log("lass compras", compras);
 
+  
   useEffect(() => {
     const reloadListener = navigation.addListener("focus", () => {
       getCompras();
     });
-    console.log("oeoeoeoe");
     return () => {
       reloadListener();
     };
@@ -57,9 +57,20 @@ export default function Compras({ navigation }) {
     navigation.navigate("createCompras");
   };
 
+  // const filteredCompras = compras.filter((item) => {
+  //   return item.codigo.toLowerCase().includes(searchTerm.toLowerCase());
+  // });
+
+
   const filteredCompras = compras.filter((item) => {
-    return item.codigo.toLowerCase().includes(searchTerm.toLowerCase());
+    return (
+      item.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      moment(item.fecha).format("YYYY-MM-DD").includes(searchTerm.toLowerCase())
+    );
   });
+  
+
 
   return (
     <LinearGradient
@@ -102,21 +113,26 @@ export default function Compras({ navigation }) {
         style={tw`w-full shadow-blue-600/40`}
         data={filteredCompras}
         keyExtractor={(item) => item._id}
-        numColumns={2}
+        numColumns={1}
         renderItem={({ item }) => {
           const namesArray = item.repuestos.map((i) => i.nombre_repuesto);
           const namesStringFormatted = namesArray.join(", ");
           const namesArray2 = item.repuestos.map((i) => i.precio_total);
+          let totalSuma=0,numeros = namesArray2;
+          for(let i = 0; i < numeros.length; i++) totalSuma+=numeros[i];
+          const SumaTotales = totalSuma
           const namesStringFormatted2 = namesArray2.join(", ");
           return (
             <TouchableOpacity onPress={() => onPressItem(item)}>
               <CardCompras
                 codigo={item.codigo}
                 proveedor={item.proveedor}
-                total={namesStringFormatted2}
+                total={SumaTotales}
                 fecha={moment(item.fecha).format("YYYY-MM-DD")}
                 repuestos={namesStringFormatted}
+                anulado={item.anulado}
               />
+              
             </TouchableOpacity>
           );
         }}
@@ -124,3 +140,21 @@ export default function Compras({ navigation }) {
     </LinearGradient>
   );
 }
+
+
+// Estilos para el recuadro de "Compras"
+const styles = StyleSheet.create({
+  titleContainer: {
+    backgroundColor: "#fff", // Color de fondo del recuadro
+    width: "100%",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  titleText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1E293B", // Color del texto
+  },
+});

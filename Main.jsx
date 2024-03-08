@@ -9,13 +9,15 @@ import { useContext, useState } from "react";
 import StackAuth from "./src/navigation/StackAuth";
 import AuthProvider, { AuthContext } from "./src/context/AuthProvider";
 import DrawerAppNavigation from "./src/navigation/DrawerAppNavigation";
+import MyTabs from "./src/navigation/MaterialBottomTabNavigator";
+
 
 export default function Main() {
     const {auth } = useContext(AuthContext) 
   return (
    
       <NavigationContainer>
-     {auth ? <DrawerAppNavigation/> : <StackAuth/>}
+     {auth ? <MyTabs/> : <StackAuth/>}
      
 
       </NavigationContainer>
