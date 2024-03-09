@@ -46,9 +46,9 @@ export default function DetalleCompra(props) {
           
           <Text style={tw`text-white text-lg`}>Total: ${repuestos.reduce((acc, repuesto) => acc + repuesto.precio_total, 0)}</Text>
           </View>
-          <Text style={tw`text-white text-lg`}>Repuestos:</Text>
+          <Text style={tw`text-white text-lg mb-2`}>Repuestos:</Text>
           {repuestos.map((repuesto, index) => (
-            <View key={index} style={tw`bg-slate-600 mb-3 p-2 rounded border-2 border-blue-400`}>
+            <View key={index} style={tw`bg-slate-700 mb-2 p-2 rounded border-2 border-blue-400`}>
               <Text style={tw`text-white text-lg`}>Nombre: {repuesto.nombre_repuesto}</Text>
               <Text style={tw`text-white text-lg`}>Cantidad: {repuesto.cantidad_repuesto}</Text>
               <Text style={tw`text-white text-lg`}>Precio Unitario: ${repuesto.precio_unitario}</Text>
