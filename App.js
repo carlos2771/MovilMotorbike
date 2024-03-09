@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import SignUp from "./src/screens/SingIn";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Compras from "./src/screens/Compras";
+import Compras from "./src/screens/Compras/Compras";
 import { useState } from "react";
 import StackAuth from "./src/navigation/StackAuth";
 import AuthProvider from "./src/context/AuthProvider";

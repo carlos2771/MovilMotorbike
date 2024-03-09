@@ -3,8 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import React from 'react'
 import SingnIn from '../screens/SingIn'
 import SingUP from '../screens/SingUp'
-import Compras from '../screens/Compras'
-import CreateCompras from '../screens/CreateCompras'
+import Compras from '../screens/Compras/Compras'
+import CreateCompras from '../screens/Compras/CreateCompras'
 
 
 export default function StackAuth() {
@@ -15,7 +15,7 @@ export default function StackAuth() {
    <Stack.Navigator initialRouteName="SignIn" screenOptions={{headerShown:false}}>
     <Stack.Screen name="SignIn" component={SingnIn}/>
         <Stack.Screen name="SignUp" component={SingUP}/>
-       
+        
    </Stack.Navigator>
     
   )

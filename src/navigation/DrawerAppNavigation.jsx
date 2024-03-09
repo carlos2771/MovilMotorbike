@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native'
 import React, { useContext } from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import Clientes from '../screens/CartClientes'
+import Clientes from '../screens/Clientes/CartClientes'
 import StackCompras from './StackCompras'
-import DetalleCompra from '../screens/DetalleCompras'
+import DetalleCompra from '../screens/Compras/DetalleCompras'
 import tw from 'twrnc'
 
 const Drawer = createDrawerNavigator()

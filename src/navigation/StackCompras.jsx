@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import Compras from '../screens/Compras'
-import CreateCompras from '../screens/CreateCompras'
+import Compras from '../screens/Compras/Compras'
+import CreateCompras from '../screens/Compras/CreateCompras'
 
 
 export default function StackCompras() {

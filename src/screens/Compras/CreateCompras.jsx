@@ -11,11 +11,11 @@ import {
 } from "react-native";
 import { AntDesign } from "react-native-vector-icons";
 import axios from "axios";
-import { axiosClient } from "../api/axiosInstance";
+import { axiosClient } from "../../api/axiosInstance";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
-import { useCompras } from "../context/ComprasContext";
+import { useCompras } from "../../context/ComprasContext";
 import tw from "twrnc";
 import { LinearGradient } from "expo-linear-gradient";
 

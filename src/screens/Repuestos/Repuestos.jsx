@@ -11,7 +11,7 @@ import {
     Dimensions,
     TextInput,
   } from "react-native";
-import { useRepuestos } from '../context/RepuestosContext';
+import { useRepuestos } from '../../context/RepuestosContext';
 
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";

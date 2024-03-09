@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useLayoutEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
-
-import { useClientes } from '../context/ClienteContext';
+import { useNavigation } from "@react-navigation/native";
+import { useClientes } from "../../context/ClienteContext";
 
 export default function Clientes() {
   const { clientes, getClientes, getCliente, updateCliente } = useClientes();
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     fetchData();
@@ -18,21 +25,26 @@ export default function Clientes() {
       await getClientes();
       setLoading(false);
     } catch (error) {
-      console.error('Error al obtener los clientes:', error);
+      console.error("Error al obtener los clientes:", error);
       setLoading(false);
     }
   };
 
+
   const renderItem = ({ item }) => {
-    const borderColor = item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
+    const borderColor =
+      item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
     return (
-      <TouchableOpacity style={[tw`m-2 rounded p-3 border border-2`, borderColor ]}>
-        
-          <Text style={tw`text-white text-2xl mr-auto`}>{item.nombre_cliente}</Text>
-          <Text style={tw`text-white`}>Tipo: {item.tipo}</Text>
-          <Text style={tw`text-white`}>Cédula: {item.cedula}</Text>
-          <Text style={tw`text-white`}>Email: {item.email_cliente}</Text>
-          <View style={tw`flex-row`}>
+      <TouchableOpacity
+        style={[tw`m-2 rounded p-3 border border-2`, borderColor]}
+      >
+        <Text style={tw`text-white text-2xl mr-auto`}>
+          {item.nombre_cliente}
+        </Text>
+        <Text style={tw`text-white`}>Tipo: {item.tipo}</Text>
+        <Text style={tw`text-white`}>Cédula: {item.cedula}</Text>
+        <Text style={tw`text-white`}>Email: {item.email_cliente}</Text>
+        <View style={tw`flex-row`}>
           <Text style={tw`text-white`}>Teléfono: {item.telefono_cliente}</Text>
         </View>
         <View style={tw`flex-row`}>
@@ -72,18 +84,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   list: {
     flexGrow: 1,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 20,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -94,7 +106,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
 });

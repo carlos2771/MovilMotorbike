@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
-import { axiosClient } from "../api/axiosInstance";
+import { axiosClient } from "../../api/axiosInstance";
 import { useNavigation } from '@react-navigation/native';
-import { useCompras } from "../context/ComprasContext";
+import { useCompras } from "../../context/ComprasContext";
 import moment from 'moment';
 import tw from 'twrnc'
 import { LinearGradient } from 'expo-linear-gradient';

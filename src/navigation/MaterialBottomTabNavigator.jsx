@@ -4,13 +4,19 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Clientes from '../screens/CartClientes';
+
+
+import Clientes from '../screens/Clientes/CartClientes';
+
 import StackCompras from './StackCompras';
-import DetalleCompra from '../screens/DetalleCompras';
-import Repuestos from '../screens/Repuestos'
-import Marcas from '../screens/Marcas'
+import DetalleCompra from '../screens/Compras/DetalleCompras';
+
+import Repuestos from '../screens/Repuestos/Repuestos';
+import Marcas from '../screens/Marcas/Marcas'
 
 import tw, { style } from 'twrnc'
+
+
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -56,7 +62,7 @@ export default function MyTabs() {
       inactiveColor="white"
       barStyle={{ backgroundColor: '#3498DB', height: 50 }} // Ajusta la altura aquí
       style={{ height: 50 }} // Ajusta la altura del contenedor Tab.Navigator
-    
+      screenOptions={{tabBarLabel: false}}
     >
       <Tab.Screen
         name="compras"
