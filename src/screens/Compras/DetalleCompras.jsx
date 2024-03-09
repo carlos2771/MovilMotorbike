@@ -49,19 +49,21 @@ export default function DetalleCompra(props) {
           <Text style={tw`text-white text-lg mb-2`}>Repuestos:</Text>
           {repuestos.map((repuesto, index) => (
             <View key={index} style={tw`bg-slate-700 mb-2 p-2 rounded border-2 border-blue-400`}>
-              <Text style={tw`text-white text-lg`}>Nombre: {repuesto.nombre_repuesto}</Text>
-              <Text style={tw`text-white text-lg`}>Cantidad: {repuesto.cantidad_repuesto}</Text>
-              <Text style={tw`text-white text-lg`}>Precio Unitario: ${repuesto.precio_unitario}</Text>
-              <Text style={tw`text-white text-lg`}>Precio Total: ${repuesto.precio_total.toFixed(2)}</Text>
+              <Text style={tw`text-white`}>Nombre: {repuesto.nombre_repuesto}</Text>
+              <Text style={tw`text-white`}>Cantidad: {repuesto.cantidad_repuesto}</Text>
+              <Text style={tw`text-white`}>Precio Unitario: ${repuesto.precio_unitario}</Text>
+              <Text style={tw`text-white`}>Precio Total: ${repuesto.precio_total}</Text>
             </View>
           ))}
         </View>
         {!anulado ? (
-          <TouchableOpacity style={tw`w-70 bg-indigo-600 py-2 px-2 text-center mx-auto mt-5`} onPress={onSubmit}>
+          <TouchableOpacity style={tw`w-70 bg-indigo-600 py-2 px-2 text-center mx-auto mt-5 mb-4`} onPress={onSubmit}>
             <Text style={tw`text-center text-white text-lg`}>Anular Compra</Text>
           </TouchableOpacity>
         ) : (
-          <Text style={tw`text-center text-white text-lg bg-orange-500 py-2 px-2 w-59`}>Compra Anulada</Text>
+          <TouchableOpacity style={tw`w-70 bg-orange-600 py-2 px-2 text-center mx-auto mt-5 mb-4`}>
+            <Text style={tw`text-center text-white text-lg`}>Compra Anulada</Text>
+          </TouchableOpacity>
         )}
       </ScrollView>
     </LinearGradient>
