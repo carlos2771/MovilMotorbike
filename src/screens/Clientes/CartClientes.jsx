@@ -5,15 +5,25 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  TextInput
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
 import { useNavigation } from "@react-navigation/native";
 import { useClientes } from "../../context/ClienteContext";
 
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faMagnifyingGlass,
+  faPlus,
+  faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default function Clientes() {
   const { clientes, getClientes, getCliente, updateCliente } = useClientes();
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -29,6 +39,17 @@ export default function Clientes() {
       setLoading(false);
     }
   };
+
+  const filterClientes = clientes.filter((item) => {
+    return (
+      item.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.cedula.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.email_cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.telefono_cliente.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.sexo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  
 
 
   const renderItem = ({ item }) => {
@@ -62,11 +83,23 @@ export default function Clientes() {
       style={[tw`flex-1 items-center p-4`]}
     >
       <View style={tw`w-full`}>
+      <View
+        style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
+      >
+        <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
+        <TextInput
+          style={tw`h-10 text-white w-full ml-2`}
+          placeholder=" Buscar"
+          placeholderTextColor="white"
+          onChangeText={(text) => setSearchTerm(text)}
+          value={searchTerm}
+        />
+      </View> 
         {loading ? (
           <Text>Cargando...</Text>
         ) : (
           <FlatList
-            data={clientes}
+            data={filterClientes}
             renderItem={renderItem}
             keyExtractor={(item) => item._id}
             contentContainerStyle={styles.list}

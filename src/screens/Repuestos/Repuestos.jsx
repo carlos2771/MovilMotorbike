@@ -16,9 +16,16 @@ import { useRepuestos } from '../../context/RepuestosContext';
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
 
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faMagnifyingGlass,
+  faPlus,
+  faShoppingCart,
+} from "@fortawesome/free-solid-svg-icons";
+
 export default function Repuestos() {
   const { repuestos, getRepuestos, deleteRepuesto, updateRepuesto } = useRepuestos();
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,6 +40,14 @@ export default function Repuestos() {
     };
     fetchData();
   }, []);
+
+  const filterRepuestos = repuestos.filter((item) => {
+    return (
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.marca.nombre_marca.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  
 
   const renderItem = ({ item }) => {
     let borderColor = item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
@@ -60,11 +75,23 @@ export default function Repuestos() {
       style={[tw`flex-1 items-center p-4`]}
     >
     <View style={tw`w-full`}>
+    <View
+        style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
+      >
+        <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
+        <TextInput
+          style={tw`h-10 text-white w-full ml-2`}
+          placeholder=" Buscar"
+          placeholderTextColor="white"
+          onChangeText={(text) => setSearchTerm(text)}
+          value={searchTerm}
+        />
+      </View> 
       {loading ? (
         <Text>Cargando...</Text>
       ) : (
         <FlatList
-          data={repuestos}
+          data={filterRepuestos}
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}

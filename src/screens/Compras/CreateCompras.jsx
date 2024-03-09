@@ -177,7 +177,7 @@ export default function CreateCompras() {
       end={{ x: 1, y: 0 }}
       style={[tw`flex-1 items-center p-4`]}
     >
-      <ScrollView style={styles.container}>
+      <ScrollView style={tw`flex-1 text-center`}>
         <Text style={tw`text-3xl text-white text-center`}>Crear Compra</Text>
 
         <View style={styles.inputgroup}>

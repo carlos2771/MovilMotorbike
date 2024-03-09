@@ -1,15 +1,22 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import * as React from "react";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from "@react-navigation/native";
+
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 
 import Clientes from '../screens/Clientes/CartClientes';
 
 import StackCompras from './StackCompras';
 import DetalleCompra from '../screens/Compras/DetalleCompras';
+import CreateCompras from '../screens/Compras/CreateCompras';
 
 import Repuestos from '../screens/Repuestos/Repuestos';
 import Marcas from '../screens/Marcas/Marcas'
@@ -27,6 +34,7 @@ function ComprasYdetalle() {
     <HomeStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#3498DB'},  headerTitleStyle: { color: '#FFFFFF', fontWeight: 'bold'} }}>
       <HomeStack.Screen name="Compras" component={StackCompras}/>
       <HomeStack.Screen name="detalle" component={DetalleCompra} />
+      <HomeStack.Screen name="createCompras" component={CreateCompras} />
     </HomeStack.Navigator>
   );
 }

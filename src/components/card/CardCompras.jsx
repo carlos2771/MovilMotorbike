@@ -13,10 +13,8 @@ export default function CardCompras({repuestos,fechaCreacion, proveedor, total, 
         </View>
         <View style={tw`flex-row`}>
         <Text style={tw`text-white mr-auto`}>Fecha:{fecha}</Text>
-        <Text style={tw`text-white`}>Total:{total}</Text>
+        <Text style={tw`text-white text-lg`}>Total:{total}</Text>
         </View>
-        <Text style={tw`text-white`}>Repuesto:{repuestos}</Text>
-        
     </View>
   )
 }
