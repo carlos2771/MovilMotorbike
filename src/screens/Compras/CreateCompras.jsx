@@ -32,6 +32,7 @@ export default function CreateCompras() {
   };
   const [state, setState] = useState(initialState);
   const [selectedRepuesto, setSelectedRepuesto] = useState(null);
+  const [handleRepuestos, setHandleRepuestos] = useState([])
   const [isTypingProveedor, setIsTypingProveedor] = useState(false); // Nuevo estado
   const navigation = useNavigation();
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
@@ -125,11 +126,13 @@ export default function CreateCompras() {
         cantidad_repuesto: state.cantidad,
         precio_unitario: state.precio_unitario,
         precio_total: state.precio_unitario * state.cantidad,
+        nombre_marca: repuesto.nombre_marca
         // Puedes agregar más campos según lo que necesite tu backend
       }));
 
+
       const datosParaEnviar = {
-        repuestos: repuestosParaEnviar,
+        repuestos: handleRepuestos,
         proveedor: state.proveedor,
         codigo: state.codigo,
         fecha: state.fecha,
@@ -169,6 +172,27 @@ export default function CreateCompras() {
   const proveedoresUnicos = Array.from(
     new Set(compras.map((proveedor) => proveedor.proveedor))
   );
+  const addRepuestos = () =>{
+    const repuestosSeleccionados = state.repuestos.filter(
+      (repuesto) => repuesto.selected
+    );
+    if (repuestosSeleccionados.length === 0) {
+      Alert.alert("Debe seleccionar al menos un repuesto");
+      return;
+    }
+    const nuevosRepuestos = repuestosSeleccionados.map((repuesto) => ({
+      repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
+      nombre_repuesto: repuesto.name,
+      cantidad_repuesto: state.cantidad,
+      precio_unitario: state.precio_unitario,
+      precio_total: state.precio_unitario * state.cantidad,
+      marca_repuesto: repuesto.nombre_marca
+      // Puedes agregar más campos según lo que necesite tu backend
+    }));
+    const repuestosPrevios = [...handleRepuestos, ...nuevosRepuestos];
+    setHandleRepuestos(repuestosPrevios)
+    console.log("repuesto guardados",repuestosPrevios);
+  }
 
   return (
     <LinearGradient
@@ -279,7 +303,12 @@ export default function CreateCompras() {
             />
           )}
         </View>
-
+        <View>
+          <Button onPress={addRepuestos} title="add Repuesto"></Button>
+        </View>
+        <View>
+          <Text> Repuestos en vivo {JSON.stringify(handleRepuestos)}</Text>
+        </View>
         <View>
           {buttonHidden ? (
             <Text>Cargando..</Text>
@@ -294,8 +323,10 @@ export default function CreateCompras() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 35,
+    // flex: 1,
+    // padding: 35,
+    
+   
   },
   inputgroup: {
     flex: 1,
