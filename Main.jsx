@@ -10,7 +10,6 @@ import StackAuth from "./src/navigation/StackAuth";
 import AuthProvider, { AuthContext } from "./src/context/AuthProvider";
 import DrawerAppNavigation from "./src/navigation/DrawerAppNavigation";
 import MyTabs from "./src/navigation/MaterialBottomTabNavigator";
-import Navigation from "./src/navigation/navigation";
 
 export default function Main() {
     const {auth } = useContext(AuthContext) 
