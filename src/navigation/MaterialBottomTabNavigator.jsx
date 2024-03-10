@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext  } from 'react';
 import {
   DarkTheme,
   DefaultTheme,
@@ -39,6 +39,10 @@ import Marcas from '../screens/Marcas/Marcas'
 import tw, { style } from 'twrnc'
 import { Image, Pressable, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
+
+import { axiosClient } from "../api/axiosInstance";
+import { AuthContext } from "../context/AuthProvider";
+
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -142,7 +146,13 @@ function MyTabs() {
 
 
 const DrawerView = ({ navigation }) => {
-  const [user, setUser] = useState(null);
+  const { auth } = useContext(AuthContext) 
+
+  console.log("Datos usuario:", auth)
+
+  const response = axiosClient.get("/usuarios");
+  console.log(response.data)
+
   return(
     <DrawerContentScrollView style={tw`bg-slate-700`}>
     <LinearGradient
@@ -159,6 +169,9 @@ const DrawerView = ({ navigation }) => {
         </View>
       </View>
     </LinearGradient>
+    <View>
+      <Text>Usuario: </Text>
+    </View>
   </DrawerContentScrollView>
   )
 }
