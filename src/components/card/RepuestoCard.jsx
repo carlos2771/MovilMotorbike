@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import tw from "twrnc";
 
-const RepuestoCard = ({ repuesto, index }) => {
+const RepuestoCard = ({ repuesto, index, children}) => {
+  
+
   return (
     <Card style={tw`bg-slate-600 mb-4`}>
       <Card.Content>
@@ -25,6 +27,7 @@ const RepuestoCard = ({ repuesto, index }) => {
                 <Text style={tw`text-white font-bold text-xl`}>{repuesto.precio_total}</Text>
             </View>
         </View>
+        {children}
       </Card.Content>
     </Card>
   );
