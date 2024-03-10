@@ -40,8 +40,8 @@ import tw, { style } from 'twrnc'
 import { Image, Pressable, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-import { axiosClient } from "../api/axiosInstance";
-import { AuthContext } from "../context/AuthProvider";
+
+import { AuthContext } from '../context/AuthProvider';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -146,12 +146,7 @@ function MyTabs() {
 
 
 const DrawerView = ({ navigation }) => {
-  const { auth } = useContext(AuthContext) 
-
-  console.log("Datos usuario:", auth)
-
-  const response = axiosClient.get("/usuarios");
-  console.log(response.data)
+  const { logout } = useContext(AuthContext);
 
   return(
     <DrawerContentScrollView style={tw`bg-slate-700`}>
@@ -169,9 +164,14 @@ const DrawerView = ({ navigation }) => {
         </View>
       </View>
     </LinearGradient>
-    <View>
-      <Text>Usuario: </Text>
+    <View style={tw` h-40`}>
+      <Text style={tw`p-10 text-white text-xl font-bold`}>
+        Hola
+      </Text>
     </View>
+    <View style={tw`m-10`}>
+        <Button title="Cerrar sesión" onPress={logout} />
+      </View>
   </DrawerContentScrollView>
   )
 }
@@ -188,7 +188,6 @@ function DrawerGroup() {
 }
 
 export default function Navigation() {
-  const theme = useColorScheme();
   return (
     
       <DrawerGroup />
