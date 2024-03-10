@@ -57,6 +57,17 @@ export default function Compras({ navigation }) {
     navigation.navigate("createCompras");
   };
 
+
+  const onSubmit = async () => {
+    try {
+      await updateCompra(id);
+      navigation.navigate('compras');
+      Alert.alert("Compra anulada con éxito");
+    } catch (error) {
+      console.error('Error al anular la compra:', error);
+    }
+  };
+  
   // const filteredCompras = compras.filter((item) => {
   //   return item.codigo.toLowerCase().includes(searchTerm.toLowerCase());
   // });
@@ -125,6 +136,7 @@ export default function Compras({ navigation }) {
           return (
             <TouchableOpacity onPress={() => onPressItem(item)}>
               <CardCompras
+                id={item._id}
                 codigo={item.codigo}
                 proveedor={item.proveedor}
                 total={SumaTotales}

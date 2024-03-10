@@ -1,14 +1,29 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
 import {
   DarkTheme,
   DefaultTheme,
   NavigationContainer,
 } from "@react-navigation/native";
 
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  TextInput,
+} from "react-native";
+
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { DrawerContentScrollView, createDrawerNavigator } from "@react-navigation/drawer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 
@@ -22,13 +37,25 @@ import Repuestos from '../screens/Repuestos/Repuestos';
 import Marcas from '../screens/Marcas/Marcas'
 
 import tw, { style } from 'twrnc'
-
-
+import { Image, Pressable, useColorScheme } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const SettingsStack = createNativeStackNavigator();
 
+
+
+function HomeStackGroup() {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="MyTabs" component={MyTabs} />
+    </HomeStack.Navigator>
+  );
+}
+
+
+// Pagina principal
 function ComprasYdetalle() {
   return (
     <HomeStack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#3498DB'},  headerTitleStyle: { color: '#FFFFFF', fontWeight: 'bold'} }}>
@@ -63,7 +90,7 @@ function VerMarcas() {
       );
 }
 
-export default function MyTabs() {
+function MyTabs() {
   return (
     <Tab.Navigator
       activeColor="black"
@@ -110,5 +137,48 @@ export default function MyTabs() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+
+const DrawerView = ({ navigation }) => {
+  const [user, setUser] = useState(null);
+  return(
+    <DrawerContentScrollView style={tw`bg-slate-700`}>
+    <LinearGradient
+      colors={["#1E293B", "#0f172a", "#1E293B"]}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
+      style={[tw`flex-1 items-center justify-center h-40`]}
+    >
+      <View style={tw`justify-center items-center`}>
+        {/* <Image style={tw`pt-20 w-full h-full`} source={require('../images/images.jpeg')}/> */}
+        <View style={tw`flex-row`}>
+          <Text style={tw`text-white text-3xl font-bold`}>Motor</Text>
+          <Text style={tw`text-blue-300 text-3xl font-bold`}>Bike</Text>
+        </View>
+      </View>
+    </LinearGradient>
+  </DrawerContentScrollView>
+  )
+}
+
+
+const Drawer = createDrawerNavigator();
+
+function DrawerGroup() {
+  return (
+    <Drawer.Navigator screenOptions={{ headerShown: false }} drawerContent={(props) => <DrawerView { ...props }/>}>
+      <Drawer.Screen name="Inicio" component={HomeStackGroup} />
+    </Drawer.Navigator>
+  );
+}
+
+export default function Navigation() {
+  const theme = useColorScheme();
+  return (
+    
+      <DrawerGroup />
+
   );
 }
