@@ -18,9 +18,8 @@ import SelectDropdown from "react-native-select-dropdown";
 import { useCompras } from "../../context/ComprasContext";
 import tw from "twrnc";
 import { LinearGradient } from "expo-linear-gradient";
-import RepuestoCard from "../../components/card/RepuestoCard"; // Asegúrate de importar el componente RepuestoCard
 
-import { format } from "date-fns";
+import { format } from 'date-fns';
 
 export default function CreateCompras() {
   const initialState = {
@@ -33,7 +32,7 @@ export default function CreateCompras() {
   };
   const [state, setState] = useState(initialState);
   const [selectedRepuesto, setSelectedRepuesto] = useState(null);
-  const [handleRepuestos, setHandleRepuestos] = useState([]);
+  const [handleRepuestos, setHandleRepuestos] = useState([])
   const [isTypingProveedor, setIsTypingProveedor] = useState(false); // Nuevo estado
   const navigation = useNavigation();
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
@@ -119,6 +118,10 @@ export default function CreateCompras() {
         Alert.alert("Debe seleccionar al menos un repuesto");
         return;
       }
+      if (handleRepuestos.length === 0) {
+        Alert.alert("Debe añadir un repuesto al menos un repuesto");
+        return;
+      }
       setButtonHidden(true);
       // Crea un nuevo array con la información necesaria para el backend
       const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
@@ -127,9 +130,10 @@ export default function CreateCompras() {
         cantidad_repuesto: state.cantidad,
         precio_unitario: state.precio_unitario,
         precio_total: state.precio_unitario * state.cantidad,
-        nombre_marca: repuesto.nombre_marca,
+        nombre_marca: repuesto.nombre_marca
         // Puedes agregar más campos según lo que necesite tu backend
       }));
+
 
       const datosParaEnviar = {
         repuestos: handleRepuestos,
@@ -172,7 +176,7 @@ export default function CreateCompras() {
   const proveedoresUnicos = Array.from(
     new Set(compras.map((proveedor) => proveedor.proveedor))
   );
-  const addRepuestos = () => {
+  const addRepuestos = () =>{
     const repuestosSeleccionados = state.repuestos.filter(
       (repuesto) => repuesto.selected
     );
@@ -186,19 +190,13 @@ export default function CreateCompras() {
       cantidad_repuesto: state.cantidad,
       precio_unitario: state.precio_unitario,
       precio_total: state.precio_unitario * state.cantidad,
-      marca_repuesto: repuesto.nombre_marca,
+      marca_repuesto: repuesto.nombre_marca
       // Puedes agregar más campos según lo que necesite tu backend
     }));
     const repuestosPrevios = [...handleRepuestos, ...nuevosRepuestos];
-    setHandleRepuestos(repuestosPrevios);
-    setState({ ...state, cantidad: "", precio_unitario: "", nombre_repuesto: "", name: "" });
-    console.log("repuesto guardados", repuestosPrevios);
-  };
-
-  const totalPreciosRepuestos = handleRepuestos.reduce((total, repuesto) => {
-    return total + repuesto.precio_total;
-  }, 0);
-  
+    setHandleRepuestos(repuestosPrevios)
+    console.log("repuesto guardados",repuestosPrevios);
+  }
 
   return (
     <LinearGradient
@@ -208,137 +206,118 @@ export default function CreateCompras() {
       style={[tw`flex-1 items-center p-4`]}
     >
       <ScrollView style={tw`flex-1 text-center`}>
-        <Text style={tw`text-xl text-white text-center`}>Crear Compra</Text>
-        <View style={tw`bg-slate-600 p-5 mb-4 rounded`}>
-          <View style={[styles.inputgroup,{ flexDirection: "row", alignItems: "center" },tw``]}>
-            <Text style={[tw`text-lg text-white`, { flex: 1 }]}>
-              Fecha seleccionada: {"\n"} {format(state.fecha, "dd/MM/yyyy")}
-            </Text>
-            <TouchableOpacity onPress={showDatePicker}>
-              <Text style={styles.buttonText}>
-                <AntDesign name="calendar" style={styles.date} />
-              </Text>
-            </TouchableOpacity>
-            {state.showDatePicker && (
-              <DateTimePicker
-                value={state.fecha}
-                mode="date"
-                display="default"
-                onChange={handleDateChange}
-              />
-            )}
-          </View>
-          <View style={styles.inputgroup}>
-            {isTypingProveedor ? (
-              <TextInput
-                placeholder="Proveedor"
-                placeholderTextColor="white"
-                onChangeText={(value) => handleChangeText(value, "proveedor")}
-                value={state.proveedor}
-                style={tw`text-lg text-white`}
-              />
-            ) : (
-              <SelectDropdown
-                style={tw`text-lg text-white`}
-                data={proveedoresUnicos}
-                defaultButtonText="Seleccione proveedor"
-                onSelect={(selectedItem, index) =>
-                  handleChangeText(selectedItem, "proveedor")
-                }
-                buttonStyle={styles.buttonStyle}
-                buttonTextStyle={styles.buttonTextStyle}
-                dropdownStyle={styles.dropdownStyle}
-                
-              />
-            )}
-            <TouchableOpacity
-              onPress={() => setIsTypingProveedor(!isTypingProveedor)}
-            >
-              <Text style={tw`text-white`}>
-                {isTypingProveedor ? "Seleccionar de la lista" : "Escribir nuevo"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.inputgroup}>
-            <TextInput
-              placeholder="Codigo"
-              placeholderTextColor="white"
-              onChangeText={(value) => handleChangeText(value, "codigo")}
-              value={state.codigo}
-              style={tw`text-lg text-white`}
-              required // Campo requerido
-            />
-          </View>
-        </View>
-        <View style={tw`bg-slate-600 p-5 mb-4 rounded`}>
-          <View >
-            <SelectDropdown
-              style={{ fontSize: 16 }}
-              data={state.repuestos.map((repuesto) => repuesto.name)}
-              onSelect={(selectedItem, index) =>
-                handleRepuestoSelection(state.repuestos[index])
-              }
-              buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem; 
-              }}
-              rowTextForSelection={(item, index) => {
-                return <Text>{item}</Text>;
-              }}
-              defaultButtonText="Seleccione repuesto"
-              buttonStyle={styles.buttonStyle}
-              buttonTextStyle={styles.buttonTextStyle}
-              dropdownStyle={styles.dropdownStyle}
-            />
-          </View>
-          <View style={styles.inputgroup}>
-            <TextInput
-              placeholder="Cantidad"
-              placeholderTextColor="white"
-              onChangeText={(value) => handleChangeText(value, "cantidad")}
-              value={state.cantidad}
-              style={tw`text-lg text-white`}
-              required // Campo requerido
-            />
-          </View>
-          <View style={styles.inputgroup}>
-            <TextInput
-              placeholder="Precio Unitario"
-              placeholderTextColor="white"
-              onChangeText={(value) =>
-                handleChangeText(
-                  value.replace(/[^0-9]/g, ""),
-                  "precio_unitario"
-                )
-              }
-              value={state.precio_unitario}
-              style={tw`text-lg text-white`}
-              required // Campo requerido
-              keyboardType="numeric" // Solo permite números
-            />
-          </View>
-        </View>
+        <Text style={tw`text-3xl text-white text-center`}>Crear Compra</Text>
 
-        <View style={tw`mb-4`}>
+        <View style={styles.inputgroup}>
+          {isTypingProveedor ? (
+            <TextInput
+              placeholder="Proveedor"
+              placeholderTextColor="white"
+              onChangeText={(value) => handleChangeText(value, "proveedor")}
+              value={state.proveedor}
+              style={tw`text-lg text-white`}
+            />
+          ) : (
+            <SelectDropdown
+              style={tw`text-lg text-white`}
+              data={proveedoresUnicos}
+              defaultButtonText="Seleccione proveedor"
+              onSelect={(selectedItem, index) =>
+                handleChangeText(selectedItem, "proveedor")
+              }
+            />
+          )}
+          <TouchableOpacity
+            onPress={() => setIsTypingProveedor(!isTypingProveedor)}
+          >
+            <Text style={tw`text-white`}>
+              {isTypingProveedor ? "Seleccionar de la lista" : "Escribir nuevo"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.inputgroup}>
+          <TextInput
+            placeholder="Codigo"
+            placeholderTextColor="white"
+            onChangeText={(value) => handleChangeText(value, "codigo")}
+            value={state.codigo}
+            style={tw`text-lg text-white`}
+            required // Campo requerido
+          />
+        </View>
+        <View style={styles.inputgroup}>
+          <SelectDropdown
+            style={{ fontSize: 16 }}
+            data={state.repuestos.map((repuesto) => repuesto.name)}
+            onSelect={(selectedItem, index) =>
+              handleRepuestoSelection(state.repuestos[index])
+            }
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return selectedItem;
+            }}
+            rowTextForSelection={(item, index) => {
+              return <Text>{item}</Text>;
+            }}
+            defaultButtonText="Seleccione repuesto"
+          />
+        </View>
+        <View style={styles.inputgroup}>
+          <TextInput
+            placeholder="Cantidad"
+            placeholderTextColor="white"
+            onChangeText={(value) => handleChangeText(value, "cantidad")}
+            value={state.cantidad}
+            style={tw`text-lg text-white`}
+            required // Campo requerido
+          />
+        </View>
+        <View style={styles.inputgroup}>
+          <TextInput
+            placeholder="Precio Unitario"
+            placeholderTextColor="white"
+            onChangeText={(value) =>
+              handleChangeText(value.replace(/[^0-9]/g, ""), "precio_unitario")
+            }
+            value={state.precio_unitario}
+            style={tw`text-lg text-white`}
+            required // Campo requerido
+            keyboardType="numeric" // Solo permite números
+          />
+        </View>
+        <View
+          style={[
+            styles.inputgroup,
+            { flexDirection: "row", alignItems: "center" },
+          ]}
+        >
+          <Text style={[tw`text-lg text-white`, { flex: 1 }]}>
+            Fecha seleccionada: {'\n'} {format(state.fecha, "dd/MM/yyyy")}
+          </Text>
+          <TouchableOpacity onPress={showDatePicker}>
+            <Text style={styles.buttonText}>
+              <AntDesign name="calendar" style={styles.date} />
+            </Text>
+          </TouchableOpacity>
+          {state.showDatePicker && (
+            <DateTimePicker
+              value={state.fecha}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
+        <View>
           <Button onPress={addRepuestos} title="add Repuesto"></Button>
         </View>
-        <ScrollView>
-          <View style={tw`mb-2`}>
-            {handleRepuestos.map((repuesto, index) => (
-              <RepuestoCard key={index} repuesto={repuesto} index={index} />
-            ))}
-          </View>
-        </ScrollView>
-        <View style={tw`bg-slate-800 border border-blue-400 mb-5 p-4 flex-row`}>
-          <Text style={tw`text-xl font-bold text-white mr-auto`}>Total:</Text>
-        <Text style={tw`text-xl font-bold text-blue-300`}>${totalPreciosRepuestos}</Text>
+        <View>
+          <Text> Repuestos en vivo {JSON.stringify(handleRepuestos)}</Text>
         </View>
         <View>
           {buttonHidden ? (
             <Text>Cargando..</Text>
           ) : (
-          <View style={tw`mb-5`}>
-            <Button title="Guardar Producto" onPress={saveProduct}/>
-          </View>
+            <Button title="Guardar Producto" onPress={saveProduct} />
           )}
         </View>
       </ScrollView>
@@ -350,6 +329,8 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     // padding: 35,
+    
+   
   },
   inputgroup: {
     flex: 1,
@@ -375,25 +356,4 @@ const styles = StyleSheet.create({
     color: "white",
   },
   date: { fontSize: 30, color: "white" },
-
-  buttonStyle: {
-    backgroundColor: "#475569",
-    borderRadius: 1,
-    width: "full",
-    borderLeftWidth: 1,  // Ancho del borde izquierdo
-    borderRightWidth: 1,
-    borderBottomWidth: 1, // Ancho del borde derecho
-    borderColor: 'white',
-    marginBottom: 10
-  },
-  buttonTextStyle: {
-    color: "#FFF",
-    fontSize: 16,
-  },
-  dropdownStyle: {
-    backgroundColor: "#FFF",
-    borderRadius: 8,
-    borderColor: "#CCC",
-    borderWidth: 1,
-  },
 });
