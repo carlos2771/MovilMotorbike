@@ -19,7 +19,8 @@ import { useCompras } from "../../context/ComprasContext";
 import tw from "twrnc";
 import { LinearGradient } from "expo-linear-gradient";
 import RepuestoCard from "../../components/card/RepuestoCard"; // Asegúrate de importar el componente RepuestoCard
-
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 
 export default function CreateCompras() {
@@ -38,6 +39,7 @@ export default function CreateCompras() {
   const navigation = useNavigation();
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
   const [buttonHidden, setButtonHidden] = useState(false);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,45 +93,36 @@ export default function CreateCompras() {
     try {
       const expresion = /^[0-9]+$/;
       // Verificar si todos los campos están completos
-      if (
-        !state.proveedor ||
-        !state.codigo ||
-        !state.cantidad ||
-        !state.precio_unitario
-      ) {
+      if (!state.proveedor || !state.codigo) {
         Alert.alert("Todos los campos son obligatorios");
         return;
       }
       // Verificar si la cantidad no es un número
-      if (!expresion.test(state.cantidad)) {
-        Alert.alert("Cantidad debe ser un número entero");
-        return;
-      }
-      if (!expresion.test(state.precio_unitario)) {
-        Alert.alert("Precio unitario debe ser un número entero");
-        return;
-      }
       // Filtra solo los repuestos seleccionados
       const repuestosSeleccionados = state.repuestos.filter(
         (repuesto) => repuesto.selected
       );
 
       // Verificar si se ha seleccionado al menos un repuesto
-      if (repuestosSeleccionados.length === 0) {
-        Alert.alert("Debe seleccionar al menos un repuesto");
+      // if (repuestosSeleccionados.length === 0) {
+      //   Alert.alert("Debe seleccionar al menos un repuesto");
+      //   return;
+      // }
+      if (handleRepuestos.length === 0) {
+        Alert.alert("Debe agregar el repuesto a la card");
         return;
       }
       setButtonHidden(true);
       // Crea un nuevo array con la información necesaria para el backend
-      const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
-        repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
-        nombre_repuesto: repuesto.name,
-        cantidad_repuesto: state.cantidad,
-        precio_unitario: state.precio_unitario,
-        precio_total: state.precio_unitario * state.cantidad,
-        nombre_marca: repuesto.nombre_marca,
-        // Puedes agregar más campos según lo que necesite tu backend
-      }));
+      // const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
+      //   repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
+      //   nombre_repuesto: repuesto.name,
+      //   cantidad_repuesto: state.cantidad,
+      //   precio_unitario: state.precio_unitario,
+      //   precio_total: state.precio_unitario * state.cantidad,
+      //   nombre_marca: repuesto.nombre_marca,
+      //   // Puedes agregar más campos según lo que necesite tu backend
+      // }));
 
       const datosParaEnviar = {
         repuestos: handleRepuestos,
@@ -157,7 +150,7 @@ export default function CreateCompras() {
     const repuestosDesmarcados = state.repuestos.map((r) => ({
       ...r,
       selected: false,
-    }));
+    }) );
 
     // Encuentra el repuesto seleccionado y márcalo
     const repuestosActualizados = repuestosDesmarcados.map((r) => ({
@@ -166,18 +159,29 @@ export default function CreateCompras() {
     }));
 
     setState({ ...state, repuestos: repuestosActualizados });
+
   };
 
   // Filtra los proveedores únicos
   const proveedoresUnicos = Array.from(
     new Set(compras.map((proveedor) => proveedor.proveedor))
   );
+
   const addRepuestos = () => {
+    const expresion = /^[0-9]+$/;
     const repuestosSeleccionados = state.repuestos.filter(
       (repuesto) => repuesto.selected
     );
     if (repuestosSeleccionados.length === 0) {
       Alert.alert("Debe seleccionar al menos un repuesto");
+      return;
+    }
+    if (!expresion.test(state.cantidad) || state.cantidad <= 0) {
+      Alert.alert("Cantidad no puede estar vacio y mayor a 0");
+      return;
+    }
+    if (!expresion.test(state.precio_unitario) || state.precio_unitario <= 0) {
+      Alert.alert("Precio unitario no puede estar vacio entero y mayor a 0");
       return;
     }
     const nuevosRepuestos = repuestosSeleccionados.map((repuesto) => ({
@@ -191,14 +195,31 @@ export default function CreateCompras() {
     }));
     const repuestosPrevios = [...handleRepuestos, ...nuevosRepuestos];
     setHandleRepuestos(repuestosPrevios);
-    setState({ ...state, cantidad: "", precio_unitario: "", nombre_repuesto: "", name: "" });
+    setState({
+      ...state,
+      cantidad: "",
+      precio_unitario: "",
+      nombre_repuesto: "",
+      name: "",
+    });
     console.log("repuesto guardados", repuestosPrevios);
+
+    
   };
 
   const totalPreciosRepuestos = handleRepuestos.reduce((total, repuesto) => {
     return total + repuesto.precio_total;
   }, 0);
-  
+
+  const deleteItem = (index) => {
+    const newRepuestos = [...handleRepuestos]; // disperso los repuestos para que se mantengan despues de eliminarlos 
+    newRepuestos.splice(index, 1); // paso el indice para eliminar los repuestos
+    
+    setHandleRepuestos(newRepuestos); // y actualizo los repuestos
+    
+    console.log("nuevos repestos", newRepuestos);
+    console.log("nuevos repuesotsssss", handleRepuestos);
+  };
 
   return (
     <LinearGradient
@@ -210,7 +231,13 @@ export default function CreateCompras() {
       <ScrollView style={tw`flex-1 text-center`}>
         <Text style={tw`text-xl text-white text-center`}>Crear Compra</Text>
         <View style={tw`bg-slate-600 p-5 mb-4 rounded`}>
-          <View style={[styles.inputgroup,{ flexDirection: "row", alignItems: "center" },tw``]}>
+          <View
+            style={[
+              styles.inputgroup,
+              { flexDirection: "row", alignItems: "center" },
+              tw``,
+            ]}
+          >
             <Text style={[tw`text-lg text-white`, { flex: 1 }]}>
               Fecha seleccionada: {"\n"} {format(state.fecha, "dd/MM/yyyy")}
             </Text>
@@ -248,14 +275,15 @@ export default function CreateCompras() {
                 buttonStyle={styles.buttonStyle}
                 buttonTextStyle={styles.buttonTextStyle}
                 dropdownStyle={styles.dropdownStyle}
-                
               />
             )}
             <TouchableOpacity
               onPress={() => setIsTypingProveedor(!isTypingProveedor)}
             >
               <Text style={tw`text-white`}>
-                {isTypingProveedor ? "Seleccionar de la lista" : "Escribir nuevo"}
+                {isTypingProveedor
+                  ? "Seleccionar de la lista"
+                  : "Escribir nuevo"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -271,7 +299,7 @@ export default function CreateCompras() {
           </View>
         </View>
         <View style={tw`bg-slate-600 p-5 mb-4 rounded`}>
-          <View >
+          <View>
             <SelectDropdown
               style={{ fontSize: 16 }}
               data={state.repuestos.map((repuesto) => repuesto.name)}
@@ -279,7 +307,7 @@ export default function CreateCompras() {
                 handleRepuestoSelection(state.repuestos[index])
               }
               buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem; 
+                return selectedItem;
               }}
               rowTextForSelection={(item, index) => {
                 return <Text>{item}</Text>;
@@ -294,9 +322,12 @@ export default function CreateCompras() {
             <TextInput
               placeholder="Cantidad"
               placeholderTextColor="white"
-              onChangeText={(value) => handleChangeText(value, "cantidad")}
+              onChangeText={(value) =>
+                handleChangeText(value.replace(/[^0-9]/g, ""), "cantidad")
+              }
               value={state.cantidad}
               style={tw`text-lg text-white`}
+              keyboardType="numeric"
               required // Campo requerido
             />
           </View>
@@ -324,21 +355,28 @@ export default function CreateCompras() {
         <ScrollView>
           <View style={tw`mb-2`}>
             {handleRepuestos.map((repuesto, index) => (
-              <RepuestoCard key={index} repuesto={repuesto} index={index} />
+              <RepuestoCard key={index} repuesto={repuesto}>
+                <TouchableOpacity onPress={() => deleteItem(index)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                  <Text>Eliminar</Text>
+                </TouchableOpacity>
+              </RepuestoCard>
             ))}
           </View>
         </ScrollView>
         <View style={tw`bg-slate-800 border border-blue-400 mb-5 p-4 flex-row`}>
           <Text style={tw`text-xl font-bold text-white mr-auto`}>Total:</Text>
-        <Text style={tw`text-xl font-bold text-blue-300`}>${totalPreciosRepuestos}</Text>
+          <Text style={tw`text-xl font-bold text-blue-300`}>
+            ${totalPreciosRepuestos}
+          </Text>
         </View>
         <View>
           {buttonHidden ? (
             <Text>Cargando..</Text>
           ) : (
-          <View style={tw`mb-5`}>
-            <Button title="Guardar Producto" onPress={saveProduct}/>
-          </View>
+            <View style={tw`mb-5`}>
+              <Button title="Guardar Producto" onPress={saveProduct} />
+            </View>
           )}
         </View>
       </ScrollView>
@@ -380,11 +418,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#475569",
     borderRadius: 1,
     width: "full",
-    borderLeftWidth: 1,  // Ancho del borde izquierdo
+    borderLeftWidth: 1, // Ancho del borde izquierdo
     borderRightWidth: 1,
     borderBottomWidth: 1, // Ancho del borde derecho
-    borderColor: 'white',
-    marginBottom: 10
+    borderColor: "white",
+    marginBottom: 10,
   },
   buttonTextStyle: {
     color: "#FFF",

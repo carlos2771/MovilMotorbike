@@ -21,7 +21,7 @@ export default function SingnIn({navigation: {navigate}}) {
                 return;
             }
     
-            singIn();
+            singIn(response.data.username);
             alert(`Bienvenido ${JSON.stringify(response.data.username)}`);
         } catch (error) {
             if (error.response && error.response.status === 400) {

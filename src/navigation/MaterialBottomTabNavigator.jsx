@@ -52,7 +52,6 @@ const HomeStack = createNativeStackNavigator();
 const SettingsStack = createNativeStackNavigator();
 
 
-
 function HomeStackGroup() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
@@ -149,8 +148,7 @@ function MyTabs() {
 
 
 const DrawerView = ({ navigation }) => {
-  const { logout } = useContext(AuthContext);
-
+  const { user, logout } = useContext(AuthContext);
   return(
     <ScrollView style={tw`bg-slate-700`}>
     <LinearGradient
@@ -171,7 +169,7 @@ const DrawerView = ({ navigation }) => {
     <View style={tw`min-h-130 max-h-130`}>
         <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
           <Text style={tw`text-white text-lg font-bold `}>
-            Hola
+            Hola, {user && user}
           </Text>
         </TouchableOpacity>
     </View>
