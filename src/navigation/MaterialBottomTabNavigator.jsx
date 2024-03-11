@@ -43,6 +43,9 @@ import { StatusBar } from "expo-status-bar";
 
 import { AuthContext } from '../context/AuthProvider';
 
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+
 
 const Tab = createMaterialBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -149,7 +152,7 @@ const DrawerView = ({ navigation }) => {
   const { logout } = useContext(AuthContext);
 
   return(
-    <DrawerContentScrollView style={tw`bg-slate-700`}>
+    <ScrollView style={tw`bg-slate-700`}>
     <LinearGradient
       colors={["#1E293B", "#0f172a", "#1E293B"]}
       start={{ x: 0, y: 1 }}
@@ -157,22 +160,29 @@ const DrawerView = ({ navigation }) => {
       style={[tw`flex-1 items-center justify-center h-40`]}
     >
       <View style={tw`justify-center items-center`}>
-        {/* <Image style={tw`pt-20 w-full h-full`} source={require('../images/images.jpeg')}/> */}
-        <View style={tw`flex-row`}>
+        <Image style={tw`w-40 h-full`} source={require('../images/motorbike (3).png')}/>
+        {/* <View style={tw`flex-row`}>
           <Text style={tw`text-white text-3xl font-bold`}>Motor</Text>
-          <Text style={tw`text-blue-300 text-3xl font-bold`}>Bike</Text>
-        </View>
+          <Text style={tw`text-sky-300 text-3xl font-bold`}>Bike</Text>
+        </View> */}
       </View>
     </LinearGradient>
-    <View style={tw` h-40`}>
-      <Text style={tw`p-10 text-white text-xl font-bold`}>
-        Hola
-      </Text>
+    <ScrollView>
+    <View style={tw`min-h-130 max-h-130`}>
+        <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
+          <Text style={tw`text-white text-lg font-bold `}>
+            Hola
+          </Text>
+        </TouchableOpacity>
     </View>
-    <View style={tw`m-10`}>
-        <Button title="Cerrar sesión" onPress={logout} />
+    </ScrollView>
+    <View style={tw`mx-10`}>
+      <TouchableOpacity onPress={logout} style={tw`p-2 bg-blue-500 rounded flex-row items-center`}>
+        <FontAwesomeIcon icon={faRightFromBracket} style={tw`text-white mx-3`} />
+        <Text style={tw`text-center text-white font-bold text-xl`}>Cerrar sesión</Text>
+      </TouchableOpacity>
       </View>
-  </DrawerContentScrollView>
+  </ScrollView>
   )
 }
 
