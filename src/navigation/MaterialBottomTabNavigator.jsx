@@ -149,6 +149,8 @@ function MyTabs() {
 
 const DrawerView = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
+  const { username, email } = user || {};
+  console.log("usuariosss",user);
   return(
     <ScrollView style={tw`bg-slate-700`}>
     <LinearGradient
@@ -168,10 +170,12 @@ const DrawerView = ({ navigation }) => {
     <ScrollView>
     <View style={tw`min-h-130 max-h-130`}>
         <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
-          <Text style={tw`text-white text-lg font-bold `}>
-            Hola, {user && user}
-          </Text>
+        <Text>Hola, {username}</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
+        <Text>Email: {email}</Text>
+        </TouchableOpacity>
+        
     </View>
     </ScrollView>
     <View style={tw`mx-10`}>
