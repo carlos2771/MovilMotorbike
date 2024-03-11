@@ -15,9 +15,14 @@ export default function DetalleCompra(props) {
 
   const onSubmit = async () => {
     try {
-      await updateCompra(id);
-      navigation.navigate('compras');
-      Alert.alert("Compra anulada con éxito");
+      Alert.alert('Anular compra', '¿Estas seguro que quieres anular esta compra?', [
+        {
+          text: 'Cancelar',
+          onPress: () => Alert.alert("No se ha anulado"),
+          style: 'cancel',
+        },
+        {text: 'Anular', onPress: () => {Alert.alert("Compra anulada con éxito"),updateCompra(id),  navigation.replace('Compras');}},
+      ]);
     } catch (error) {
       console.error('Error al anular la compra:', error);
     }

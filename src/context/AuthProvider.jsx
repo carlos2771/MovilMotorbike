@@ -13,8 +13,14 @@ export default function AuthProvider({children}) {
     setUser(userData);
   }
   const logout = () =>{
-    Alert.alert('Se ha cerrado la sesión')
-    setAuth(false)
+    Alert.alert('Cerrar sesión', '¿Estas seguro que quieres cerrar sesión?', [
+      {
+        text: 'Cancelar',
+        onPress: () => Alert.alert("No se ha cerrado la sesión"),
+        style: 'cancel',
+      },
+      {text: 'Aceptar', onPress: () => setAuth(false)},
+    ]);
   }
   return (
     <AuthContext.Provider value={{auth, user, singIn,logout}}>

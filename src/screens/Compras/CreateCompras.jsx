@@ -132,7 +132,6 @@ export default function CreateCompras() {
       };
 
       const response = await axiosClient.post("/compras", datosParaEnviar);
-      console.log("Producto guardado:", response.data);
 
       if (response) {
         navigation.navigate("comprasStack");
@@ -202,9 +201,7 @@ export default function CreateCompras() {
       nombre_repuesto: "",
       name: "",
     });
-    console.log("repuesto guardados", repuestosPrevios);
 
-    
   };
 
   const totalPreciosRepuestos = handleRepuestos.reduce((total, repuesto) => {
@@ -217,8 +214,6 @@ export default function CreateCompras() {
     
     setHandleRepuestos(newRepuestos); // y actualizo los repuestos
     
-    console.log("nuevos repestos", newRepuestos);
-    console.log("nuevos repuesotsssss", handleRepuestos);
   };
 
   return (
@@ -356,9 +351,8 @@ export default function CreateCompras() {
           <View style={tw`mb-2`}>
             {handleRepuestos.map((repuesto, index) => (
               <RepuestoCard key={index} repuesto={repuesto}>
-                <TouchableOpacity onPress={() => deleteItem(index)}>
-                  <FontAwesomeIcon icon={faTrash} />
-                  <Text>Eliminar</Text>
+                <TouchableOpacity onPress={() => deleteItem(index)} style={tw`mx-auto items-center border-2 rounded-full border-red-500 w-10 p-1`}>
+                  <FontAwesomeIcon icon={faTrash} style={tw`text-red-500`}/>
                 </TouchableOpacity>
               </RepuestoCard>
             ))}

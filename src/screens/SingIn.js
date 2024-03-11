@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert } from "react-native";
 import React, { useContext, useState } from 'react';
 import { axiosClient } from "../api/axiosInstance";
 import { AuthContext } from "../context/AuthProvider";
@@ -20,9 +20,11 @@ export default function SingnIn({navigation: {navigate}}) {
                 alert("Usuario/Contraseña incorrecto");
                 return;
             }
-    
+            
             singIn({username:response.data.username, email: response.data.email});
-            alert(`Bienvenido ${JSON.stringify(response.data.username)}`);
+            Alert.alert('Bienvenido', (response.data.username), [
+                {text: 'Aceptar'},
+              ]);
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 alert("Usuario/Contraseña incorrecto");

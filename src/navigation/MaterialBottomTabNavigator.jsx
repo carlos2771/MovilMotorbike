@@ -44,7 +44,8 @@ import { StatusBar } from "expo-status-bar";
 import { AuthContext } from '../context/AuthProvider';
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faRightFromBracket , faUser } from "@fortawesome/free-solid-svg-icons";
+import MenuButtonItem from '../components/MenuButton';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -150,7 +151,6 @@ function MyTabs() {
 const DrawerView = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
   const { username, email } = user || {};
-  console.log("usuariosss",user);
   return(
     <ScrollView style={tw`bg-slate-700`}>
     <LinearGradient
@@ -169,13 +169,21 @@ const DrawerView = ({ navigation }) => {
     </LinearGradient>
     <ScrollView>
     <View style={tw`min-h-130 max-h-130`}>
-        <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
-        <Text>Hola, {username}</Text>
+        <TouchableOpacity style={tw`px-3 py-2 m-3  rounded-lg`}>
+          <View style={tw`flex-row items-center`}>
+            <View style={tw`mx-2`}>
+              <FontAwesomeIcon icon={faUser} style={tw`text-white`} />
+            </View>
+            <View>
+              <Text style={tw`text-white font-bold text-lg`}>{username}</Text>
+              <Text style={tw`text-white text-sm`}>{email}</Text>
+            </View>
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity style={tw`p-3 m-3 border-2 border-blue-600 rounded-lg`}>
-        <Text>Email: {email}</Text>
-        </TouchableOpacity>
-        
+        <MenuButtonItem text="Ir a Compras" onPress={() => navigation.navigate('compras')}/>
+        <MenuButtonItem text="Ir a Clientes" onPress={() => navigation.navigate('clientes')}/>
+        <MenuButtonItem text="Ir a Repuestos" onPress={() => navigation.navigate('repuestos')}/>
+        <MenuButtonItem text="Ir a Marcas" onPress={() => navigation.navigate('marcas')}/>
     </View>
     </ScrollView>
     <View style={tw`mx-10`}>
