@@ -146,6 +146,8 @@ function MyTabs() {
 
 const DrawerView = ({ navigation }) => {
   const { user, logout } = useContext(AuthContext);
+  const { username, email } = user || {};
+  console.log("usuariosss",user);
   return(
     <DrawerContentScrollView style={tw`bg-slate-700`}>
     <LinearGradient
@@ -163,9 +165,8 @@ const DrawerView = ({ navigation }) => {
       </View>
     </LinearGradient>
     <View style={tw` h-40`}>
-      <Text style={tw`p-10 text-white text-xl font-bold`}>
-      Hola, {user && user}
-      </Text>
+    <Text>Hola, {username}</Text>
+        <Text>Email: {email}</Text>
     </View>
     <View style={tw`m-10`}>
         <Button title="Cerrar sesión" onPress={logout} />
