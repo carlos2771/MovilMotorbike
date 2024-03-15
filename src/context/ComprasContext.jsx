@@ -35,7 +35,6 @@ export function CompraProvider({ children }) {
   const createCompra = async (compra) => {
     try {
       return  await createComprasRequest(compra);
-      // console.log("ventas:", response);
     } catch (error) {
       setErrors(error.response.data.message);
     }
@@ -70,7 +69,6 @@ export function CompraProvider({ children }) {
   };
   const anularCompra = (req, res) => {
     setAnulado(true)
-    console.log("anuladdoo",anulado);
   }
 
   useEffect(() => {

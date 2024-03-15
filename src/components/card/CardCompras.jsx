@@ -14,6 +14,7 @@ import {
   faBan,faLock 
 } from "@fortawesome/free-solid-svg-icons";
 
+
 export default function CardCompras({id,repuestos,fechaCreacion, proveedor, total, fecha, codigo, anulado, onPressAnular}) {
   let borderColor = anulado === true ? tw`border-red-500` : tw`border-blue-500`;
   

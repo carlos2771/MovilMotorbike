@@ -10,6 +10,7 @@ import {
     Alert,
     Dimensions,
     TextInput,
+    RefreshControl
   } from "react-native";
 import { useRepuestos } from '../../context/RepuestosContext';
 
@@ -22,11 +23,13 @@ import {
   faPlus,
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Repuestos() {
   const { repuestos, getRepuestos, deleteRepuesto, updateRepuesto } = useRepuestos();
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +51,11 @@ export default function Repuestos() {
     );
   });
   
+  const refreshScreen = () => {
+    setRefreshing(true); // Establecer el estado de refresco en verdadero
+    getRepuestos(); // Llamada para refrescar la pantalla
+    setRefreshing(false); // Establecer el estado de refresco en falso cuando se complete la actualización
+  };
 
   const renderItem = ({ item }) => {
     let borderColor = item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
@@ -95,6 +103,14 @@ export default function Repuestos() {
           renderItem={renderItem}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
+          refreshControl={ // Agrega RefreshControl para habilitar el pull-to-refresh
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refreshScreen}
+              colors={["#1E293B"]} // Colores del indicador de carga
+              progressBackgroundColor="#FFFFFF" // Color de fondo del indicador de carga
+            />
+          }
         />
       )}
     </View>

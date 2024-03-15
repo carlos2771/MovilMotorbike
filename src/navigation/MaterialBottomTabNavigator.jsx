@@ -170,7 +170,7 @@ const DrawerView = ({ navigation }) => {
                 <FontAwesomeIcon icon={faUser} style={tw`text-white`} />
               </View>
               <View>
-                <Text style={tw`text-white font-bold text-lg`}>{username}</Text>
+                <Text style={tw`text-white font-bold text-lg`}>{username ? username.toUpperCase() : ''}</Text>
                 <Text style={tw`text-white text-sm`}>{email}</Text>
               </View>
             </View>

@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const MenuButtonItem = ({ text, onPress, icon }) => {
     return(
-        <TouchableOpacity onPress={onPress} style={tw`px-3 py-2 m-3 border-b-2 border-blue-600`}>
+        <TouchableOpacity onPress={onPress} style={tw`px-3 py-2 mx-2 my-1 rounded-lg border-2 border-blue-600`}>
         <View style={tw`flex-row items-center`}>
-          <FontAwesomeIcon icon={icon} style={tw`text-white mr-2`} />
+          <FontAwesomeIcon icon={icon} style={tw`text-white mr-4`} />
           <Text style={tw`text-white font-bold text-lg`}>{text}</Text>
         </View>
       </TouchableOpacity>

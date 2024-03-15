@@ -5,28 +5,31 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Modal,
-  Pressable,
   Alert,
+  RefreshControl,
+  TextInput
 } from "react-native";
 import { useMarcas } from "../../context/MarcasContext";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMotorcycle } from "@fortawesome/free-solid-svg-icons";
-import { useRepuestos } from "../../context/RepuestosContext";
 import tw from "twrnc";
+import { useRepuestos } from "../../context/RepuestosContext"; // Importa el contexto de repuestos
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 export default function Marcas() {
   const { marcas, getMarcas } = useMarcas();
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [repuestoNombre, setRepuestoNombre] = useState("");
-  const { repuestos, getRepuestos } = useRepuestos();
+  const [expandedMarca, setExpandedMarca] = useState(null);
+  const { repuestos, getRepuestos } = useRepuestos(); // Utiliza el hook de repuestos
+  const [refreshing, setRefreshing] = useState(false); 
+  const [searchTerm, setSearchTerm] = useState("");
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await getMarcas();
+        await getRepuestos(); // Obtén los repuestos al cargar las marcas
         setLoading(false);
       } catch (error) {
         console.error("Error al obtener las marcas:", error);
@@ -36,106 +39,110 @@ export default function Marcas() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await getRepuestos();
-        setLoading(false);
-      } catch (error) {
-        console.error("Error al obtener los repuestos:", error);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
-  const findRepuesto = (item) => {
-    const selectedMarcaId = item;
-    const repuestosMarca = repuestos.filter(
-      (repuesto) => repuesto.marca.nombre_marca === selectedMarcaId
+  const toggleAccordion = (marcaId) => {
+    if (expandedMarca === marcaId) {
+      setExpandedMarca(null);
+    } else {
+      setExpandedMarca(marcaId);
+    }
+  };
+
+  const refreshScreen = () => {
+    setRefreshing(true); // Establecer el estado de refresco en verdadero
+    getMarcas();
+    getRepuestos(); // Llamada para refrescar la pantalla
+    setRefreshing(false); // Establecer el estado de refresco en falso cuando se complete la actualización
+  };
+
+  const filterMarcas = marcas.filter((marca) => {
+    return (
+      marca.nombre_marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (marca.repuestos && marca.repuestos.some((repuesto) =>
+        repuesto.name.toLowerCase().includes(searchTerm.toLowerCase())
+      ))
     );
-    return repuestosMarca.map((repuesto) => repuesto.name);
-  };
+  });
+  
 
-  const showModal = (item) => {
-    const repuestoNombre = findRepuesto(item);
-    setRepuestoNombre(repuestoNombre);
-    setModalVisible(true);
-  };
   const renderItem = ({ item }) => {
     let borderColor =
       item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
     return (
       <TouchableOpacity
         style={[tw`m-2  rounded p-3 border border-2`, borderColor]}
-        onPress={() => showModal(item.nombre_marca)}
+        onPress={() => toggleAccordion(item._id)}
       >
         <Text style={tw`text-white mx-auto`}>{item.nombre_marca}</Text>
+        {expandedMarca === item._id && (
+          <View style={styles.repuestosContainer}>
+            <Text style={tw`text-white font-bold mb-2`}>Repuestos: </Text>
+            <View style={tw`flex-row flex-wrap`}>
+              {findRepuesto(item._id).map((repuesto, index) => (
+                <Text key={index} style={tw`text-white mx-1 mb-1`}>
+                  {repuesto}
+                </Text>
+              ))}
+            </View>
+          </View>
+        )}
       </TouchableOpacity>
     );
   };
+
+  const findRepuesto = (marcaId) => {
+    const repuestosMarca = repuestos.filter(
+      (repuesto) => repuesto.marca._id === marcaId
+    );
+    return repuestosMarca.map((repuesto) => repuesto.name);
+  };
+  
+  
 
   return (
     <LinearGradient
       colors={["#1E293B", "#0f172a", "#1E293B"]}
       start={{ x: 0, y: 1 }}
       end={{ x: 1, y: 0 }}
-      style={styles.gradient}
+      style={tw`flex-1 items-center p-6`}
     >
-      <View style={styles.container}>
+      <View style={tw`w-full mb-10`}>
+      <View
+        style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
+      >
+        <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
+        <TextInput
+          style={tw`h-10 text-white w-full ml-2`}
+          placeholder=" Buscar"
+          placeholderTextColor="white"
+          onChangeText={(text) => setSearchTerm(text)}
+          value={searchTerm}
+        />
+      </View> 
         {loading ? (
           <Text style={styles.loading}>Cargando...</Text>
         ) : (
           <FlatList
-            data={marcas}
+            data={filterMarcas}
             renderItem={renderItem}
             keyExtractor={(item) => item._id}
-            contentContainerStyle={styles.list}
+            contentContainerStyle={tw`text-white`}
+            refreshControl={ // Agrega RefreshControl para habilitar el pull-to-refresh
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refreshScreen}
+                colors={["#1E293B"]} // Colores del indicador de carga
+                progressBackgroundColor="#FFFFFF" // Color de fondo del indicador de carga
+              />
+            }
           />
         )}
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {repuestoNombre && repuestoNombre.length > 0 ? (
-              repuestoNombre.map((repu, index) => (
-                <Text key={index} style={styles.modalText}>
-                  Repuesto: {repu}
-                </Text>
-              ))
-            ) : (
-              <Text>No hay repuestos asociados a esta marca</Text>
-            )}
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.textStyle}>Cerrar</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
     </LinearGradient>
   );
 }
 
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-    alignItems: "center",
-    padding: 4,
-  },
-  container: {
-    width: "100%",
-  },
+const styles = StyleSheet.create({ 
   loading: {
     color: "#fff",
     textAlign: "center",
@@ -143,43 +150,12 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
   },
-  //modal
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
+  repuestosContainer: {
+    marginTop: 10,
+    marginLeft: 10,
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
+  repuestoText: {
+    color: "#fff",
+    marginBottom: 5,
   },
 });
