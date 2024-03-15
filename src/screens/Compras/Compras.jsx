@@ -26,9 +26,6 @@ import {
   faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 
-import SweetAlert from 'react-native-sweet-alert';
-
-
 export default function Compras({ navigation }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
