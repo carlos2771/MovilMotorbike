@@ -54,7 +54,6 @@ export default function Marcas() {
     const repuestosMarca = repuestos.filter(
       (repuesto) => repuesto.marca.nombre_marca === selectedMarcaId
     );
-    console.log("Repuestos de la marca:", selectedMarcaId);
     return repuestosMarca.map((repuesto) => repuesto.name);
   };
 
@@ -62,10 +61,8 @@ export default function Marcas() {
     const repuestoNombre = findRepuesto(item);
     setRepuestoNombre(repuestoNombre);
     setModalVisible(true);
-    console.log("the", repuestoNombre);
   };
   const renderItem = ({ item }) => {
-    // console.log("item",item);
     let borderColor =
       item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
     return (

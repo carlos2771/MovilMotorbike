@@ -44,7 +44,7 @@ import { StatusBar } from "expo-status-bar";
 import { AuthContext } from '../context/AuthProvider';
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faRightFromBracket , faUser } from "@fortawesome/free-solid-svg-icons";
+import { faRightFromBracket , faUser, faCartShopping, faUsers, faScrewdriverWrench, faMotorcycle} from "@fortawesome/free-solid-svg-icons";
 import MenuButtonItem from '../components/MenuButton';
 
 
@@ -153,48 +153,43 @@ const DrawerView = ({ navigation }) => {
   const { username, email } = user || {};
   return(
     <ScrollView style={tw`bg-slate-700`}>
-    <LinearGradient
-      colors={["#1E293B", "#0f172a", "#1E293B"]}
-      start={{ x: 0, y: 1 }}
-      end={{ x: 1, y: 0 }}
-      style={[tw`flex-1 items-center justify-center h-40`]}
-    >
-      <View style={tw`justify-center items-center`}>
-        <Image style={tw`w-40 h-full`} source={require('../images/motorbike (3).png')}/>
-        {/* <View style={tw`flex-row`}>
-          <Text style={tw`text-white text-3xl font-bold`}>Motor</Text>
-          <Text style={tw`text-sky-300 text-3xl font-bold`}>Bike</Text>
-        </View> */}
-      </View>
-    </LinearGradient>
-    <ScrollView>
-    <View style={tw`min-h-130 max-h-130`}>
-        <TouchableOpacity style={tw`px-3 py-2 m-3  rounded-lg`}>
-          <View style={tw`flex-row items-center`}>
-            <View style={tw`mx-2`}>
-              <FontAwesomeIcon icon={faUser} style={tw`text-white`} />
-            </View>
-            <View>
-              <Text style={tw`text-white font-bold text-lg`}>{username}</Text>
-              <Text style={tw`text-white text-sm`}>{email}</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-        <MenuButtonItem text="Ir a Compras" onPress={() => navigation.navigate('compras')}/>
-        <MenuButtonItem text="Ir a Clientes" onPress={() => navigation.navigate('clientes')}/>
-        <MenuButtonItem text="Ir a Repuestos" onPress={() => navigation.navigate('repuestos')}/>
-        <MenuButtonItem text="Ir a Marcas" onPress={() => navigation.navigate('marcas')}/>
-    </View>
-    </ScrollView>
-    <View style={tw``}>
-      <TouchableOpacity onPress={logout} style={tw` bg-blue-500 rounded flex-row items-center`}>
-        <View style={tw`border border-white p-2`}>
-          <FontAwesomeIcon icon={faRightFromBracket} style={tw`text-white p-3`} />
+      <LinearGradient
+        colors={["#1E293B", "#0f172a", "#1E293B"]}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+        style={[tw`flex-1 items-center justify-center h-50`]}>
+        <View style={tw`justify-center items-center`}>
+          <Image style={tw`w-40 h-full`} source={require('../images/motorbike (3).png')} />
         </View>
-        <Text style={tw`text-center text-white font-bold text-xl p-2`}>Cerrar sesión</Text>
-      </TouchableOpacity>
+      </LinearGradient>
+      <ScrollView style={tw``}>
+        <View style={tw`min-h-135 max-h-140`}>
+          <TouchableOpacity style={tw`px-3 py-2 m-3 border-b border-gray-600`}>
+            <View style={tw`flex-row items-center`}>
+              <View style={tw`mr-2`}>
+                <FontAwesomeIcon icon={faUser} style={tw`text-white`} />
+              </View>
+              <View>
+                <Text style={tw`text-white font-bold text-lg`}>{username}</Text>
+                <Text style={tw`text-white text-sm`}>{email}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <MenuButtonItem text="Ir a Compras" onPress={() => navigation.navigate('compras')} icon={faCartShopping}/>
+          <MenuButtonItem text="Ir a Clientes" onPress={() => navigation.navigate('clientes')} icon={faUsers} />
+          <MenuButtonItem text="Ir a Repuestos" onPress={() => navigation.navigate('repuestos')} icon={faScrewdriverWrench}/>
+          <MenuButtonItem text="Ir a Marcas" onPress={() => navigation.navigate('marcas')} icon={faMotorcycle} />
+        </View>
+      </ScrollView>
+      <View style={tw`absolute bottom-0 min-w-full`}>
+        <TouchableOpacity onPress={logout} style={tw`bg-blue-500 rounded flex-row items-center`}>
+          <View style={tw`p-2`}>
+            <FontAwesomeIcon icon={faRightFromBracket} style={tw`text-white p-3`} />
+          </View>
+          <Text style={tw`text-center text-white font-bold text-xl p-2`}>Cerrar sesión</Text>
+        </TouchableOpacity>
       </View>
-  </ScrollView>
+    </ScrollView>
   )
 }
 

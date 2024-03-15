@@ -39,7 +39,6 @@ export default function CreateCompras() {
   const navigation = useNavigation();
   const { errors: comprasErrors, anulado, getCompras, compras } = useCompras();
   const [buttonHidden, setButtonHidden] = useState(false);
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,23 +72,22 @@ export default function CreateCompras() {
   }, []);
 
   const handleChangeText = (value, name) => {
-    if (name === "cantidad" || name==="precio_unitario") {
+    if (name === "cantidad" || name === "precio_unitario") {
       // Eliminar los ceros a la izquierda del valor antes de asignarlo al estado
-      value = value.replace(/^0+/, '');
+      value = value.replace(/^0+/, "");
     }
     setState({ ...state, [name]: value });
   };
-  
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || state.fecha;
     const maxDate = new Date();
     maxDate.setDate(maxDate.getDate() - 15); // Resta 15 días a la fecha actual
-  
+
     // Obtiene la fecha actual
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Establece las horas a 00:00:00 para comparar solo las fechas
-  
+
     // Verifica si la fecha seleccionada está dentro del rango permitido y es igual al día actual o anterior
     if (currentDate <= today && currentDate >= maxDate) {
       setState({
@@ -102,8 +100,6 @@ export default function CreateCompras() {
       Alert.alert("fecha invalida");
     }
   };
-  
-  
 
   const showDatePicker = () => {
     setState({ ...state, showDatePicker: true });
@@ -154,7 +150,7 @@ export default function CreateCompras() {
     const repuestosDesmarcados = state.repuestos.map((r) => ({
       ...r,
       selected: false,
-    }) );
+    }));
 
     // Encuentra el repuesto seleccionado y márcalo
     const repuestosActualizados = repuestosDesmarcados.map((r) => ({
@@ -163,7 +159,6 @@ export default function CreateCompras() {
     }));
 
     setState({ ...state, repuestos: repuestosActualizados });
-
   };
 
   // Filtra los proveedores únicos
@@ -207,8 +202,6 @@ export default function CreateCompras() {
       name: "",
     });
     console.log("repuesto guardados", repuestosPrevios);
-
-    
   };
 
   const totalPreciosRepuestos = handleRepuestos.reduce((total, repuesto) => {
@@ -216,13 +209,17 @@ export default function CreateCompras() {
   }, 0);
 
   const deleteItem = (index) => {
-    const newRepuestos = [...handleRepuestos]; // disperso los repuestos para que se mantengan despues de eliminarlos 
+    const newRepuestos = [...handleRepuestos]; // disperso los repuestos para que se mantengan despues de eliminarlos
     newRepuestos.splice(index, 1); // paso el indice para eliminar los repuestos
-    
+
     setHandleRepuestos(newRepuestos); // y actualizo los repuestos
-    
+
     console.log("nuevos repestos", newRepuestos);
     console.log("nuevos repuesotsssss", handleRepuestos);
+  };
+
+  const goBackCompras = () => {
+    navigation.navigate("comprasStack");
   };
 
   return (
@@ -382,6 +379,11 @@ export default function CreateCompras() {
               <Button title="Guardar Producto" onPress={saveProduct} />
             </View>
           )}
+        </View>
+        <View>
+          <TouchableOpacity style={tw`bg-red-500 justify-center items-center p-2 rounded`} onPress={goBackCompras}>
+            <Text style={tw`text-white font-bold`}>Cancelar</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </LinearGradient>

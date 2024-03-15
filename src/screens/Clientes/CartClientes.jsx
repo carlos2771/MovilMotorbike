@@ -5,7 +5,8 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  RefreshControl
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
@@ -25,10 +26,22 @@ export default function Clientes() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false); 
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const reloadListener = navigation.addListener("focus", () => {
+      getClientes();
+    });
+    return () => {
+      reloadListener();
+    };
+  }, [navigation, getClientes]);
+
+
 
   const fetchData = async () => {
     try {
@@ -49,6 +62,12 @@ export default function Clientes() {
       item.sexo.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
+
+  const refreshScreen = () => {
+    setRefreshing(true); // Establecer el estado de refresco en verdadero
+    getClientes(); // Llamada para refrescar la pantalla
+    setRefreshing(false); // Establecer el estado de refresco en falso cuando se complete la actualización
+  };
   
 
 
@@ -83,18 +102,16 @@ export default function Clientes() {
       style={[tw`flex-1 items-center p-4`]}
     >
       <View style={tw`w-full`}>
-      <View
-        style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
-      >
-        <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
-        <TextInput
-          style={tw`h-10 text-white w-full ml-2`}
-          placeholder=" Buscar"
-          placeholderTextColor="white"
-          onChangeText={(text) => setSearchTerm(text)}
-          value={searchTerm}
-        />
-      </View> 
+        <View style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
+          <TextInput
+            style={tw`h-10 text-white w-full ml-2`}
+            placeholder=" Buscar"
+            placeholderTextColor="white"
+            onChangeText={(text) => setSearchTerm(text)}
+            value={searchTerm}
+          />
+        </View>
         {loading ? (
           <Text>Cargando...</Text>
         ) : (
@@ -103,6 +120,14 @@ export default function Clientes() {
             renderItem={renderItem}
             keyExtractor={(item) => item._id}
             contentContainerStyle={styles.list}
+            refreshControl={ // Agrega RefreshControl para habilitar el pull-to-refresh
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refreshScreen}
+                colors={["#1E293B"]} // Colores del indicador de carga
+                progressBackgroundColor="#FFFFFF" // Color de fondo del indicador de carga
+              />
+            }
           />
         )}
       </View>

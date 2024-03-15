@@ -55,8 +55,8 @@ export default function CardCompras({id,repuestos,fechaCreacion, proveedor, tota
         <Text style={tw`text-white`} onPress={yaAnulada}><FontAwesomeIcon icon={faLock} style={tw`text-white`}/></Text>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={tw` w-16 p-2  border-2 border-indigo-500 rounded-full items-center justify-center`}>
-        <Text onPress={onSubmit}><FontAwesomeIcon icon={faBan} style={tw`text-white`}/></Text>
+        <TouchableOpacity style={tw` w-16 p-2  border-2 border-indigo-500 rounded-full items-center justify-center`} onPress={onSubmit}>
+        <Text><FontAwesomeIcon icon={faBan} style={tw`text-white`}/></Text>
         </TouchableOpacity>
       )}
       </View>
