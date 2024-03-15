@@ -71,13 +71,21 @@ export default function Compras({ navigation }) {
 
 
 
-  const filteredCompras = compras.filter((item) => {
-    return (
-      item.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      moment(item.fecha).format("YYYY-MM-DD").includes(searchTerm.toLowerCase())
-    );
-  });
+  const calculateTotalSum = (repuestos) => {
+    return repuestos.reduce((acc, repuesto) => acc + repuesto.precio_total, 0);
+  };
+  
+  const filteredCompras = compras.map((item) => ({
+    ...item,
+    total: calculateTotalSum(item.repuestos),
+  })).filter((item) => (
+    item.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    moment(item.fecha).format("YYYY-MM-DD").includes(searchTerm.toLowerCase()) ||
+    item.total.toString().includes(searchTerm) // Busca el término en la suma total
+  ));
+  
+  
   
 
 

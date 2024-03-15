@@ -47,9 +47,14 @@ export default function Repuestos() {
   const filterRepuestos = repuestos.filter((item) => {
     return (
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.marca.nombre_marca.toLowerCase().includes(searchTerm.toLowerCase())
+      item.marca.nombre_marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.price.toString().includes(searchTerm) ||
+      item.amount.toString().includes(searchTerm) || // Convertir a cadena antes de buscar
+      item.estado.toLowerCase().includes(searchTerm.toLowerCase()) // Si 'estado' es un campo relevante
+      // Agrega más condiciones si hay otros campos que quieras incluir en la búsqueda
     );
   });
+  
   
   const refreshScreen = () => {
     setRefreshing(true); // Establecer el estado de refresco en verdadero
