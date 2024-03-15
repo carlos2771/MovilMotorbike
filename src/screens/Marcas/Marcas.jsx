@@ -5,18 +5,23 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  Modal,
+  Pressable,
+  Alert,
 } from "react-native";
 import { useMarcas } from "../../context/MarcasContext";
-
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMotorcycle } from "@fortawesome/free-solid-svg-icons";
-
-import tw from 'twrnc'
+import { useRepuestos } from "../../context/RepuestosContext";
+import tw from "twrnc";
 
 export default function Marcas() {
   const { marcas, getMarcas } = useMarcas();
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [repuestoNombre, setRepuestoNombre] = useState("");
+  const { repuestos, getRepuestos } = useRepuestos();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,13 +36,44 @@ export default function Marcas() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        await getRepuestos();
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al obtener los repuestos:", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const findRepuesto = (item) => {
+    const selectedMarcaId = item;
+    const repuestosMarca = repuestos.filter(
+      (repuesto) => repuesto.marca.nombre_marca === selectedMarcaId
+    );
+    console.log("Repuestos de la marca:", selectedMarcaId);
+    return repuestosMarca.map((repuesto) => repuesto.name);
+  };
+
+  const showModal = (item) => {
+    const repuestoNombre = findRepuesto(item);
+    setRepuestoNombre(repuestoNombre);
+    setModalVisible(true);
+    console.log("the", repuestoNombre);
+  };
   const renderItem = ({ item }) => {
-    let borderColor = item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
+    // console.log("item",item);
+    let borderColor =
+      item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
     return (
-      <TouchableOpacity  style={[tw`m-2  rounded p-3 border border-2`, borderColor ]}>
-        <View style={tw`flex-row`}>
+      <TouchableOpacity
+        style={[tw`m-2  rounded p-3 border border-2`, borderColor]}
+        onPress={() => showModal(item.nombre_marca)}
+      >
         <Text style={tw`text-white mx-auto`}>{item.nombre_marca}</Text>
-        </View>
       </TouchableOpacity>
     );
   };
@@ -61,6 +97,35 @@ export default function Marcas() {
           />
         )}
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {repuestoNombre && repuestoNombre.length > 0 ? (
+              repuestoNombre.map((repu, index) => (
+                <Text key={index} style={styles.modalText}>
+                  Repuesto: {repu}
+                </Text>
+              ))
+            ) : (
+              <Text>No hay repuestos asociados a esta marca</Text>
+            )}
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 }
@@ -74,17 +139,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  icon: {
-    color: "#fff",
-    marginRight: 10,
-  },
   loading: {
     color: "#fff",
     textAlign: "center",
@@ -92,26 +146,43 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
   },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 20,
-    marginBottom: 10,
+  //modal
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowRadius: 4,
     elevation: 5,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
   },
-  text: {
-    color: "#000",
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });

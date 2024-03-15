@@ -99,7 +99,7 @@ export default function CreateCompras() {
       });
     } else {
       // Si la fecha seleccionada excede el límite o es posterior al día actual, muestra una alerta
-      Alert.alert("La fecha minimo 15 dias al dia actual y maximo dia actual");
+      Alert.alert("fecha invalida");
     }
   };
   
@@ -123,27 +123,11 @@ export default function CreateCompras() {
         (repuesto) => repuesto.selected
       );
 
-      // Verificar si se ha seleccionado al menos un repuesto
-      // if (repuestosSeleccionados.length === 0) {
-      //   Alert.alert("Debe seleccionar al menos un repuesto");
-      //   return;
-      // }
       if (handleRepuestos.length === 0) {
-        Alert.alert("Debe agregar el repuesto a la card");
+        Alert.alert("Debe agregar el repuesto a la compra");
         return;
       }
       setButtonHidden(true);
-      // Crea un nuevo array con la información necesaria para el backend
-      // const repuestosParaEnviar = repuestosSeleccionados.map((repuesto) => ({
-      //   repuesto: repuesto._id, // _id es el identificador único del repuesto en MongoDB
-      //   nombre_repuesto: repuesto.name,
-      //   cantidad_repuesto: state.cantidad,
-      //   precio_unitario: state.precio_unitario,
-      //   precio_total: state.precio_unitario * state.cantidad,
-      //   nombre_marca: repuesto.nombre_marca,
-      //   // Puedes agregar más campos según lo que necesite tu backend
-      // }));
-
       const datosParaEnviar = {
         repuestos: handleRepuestos,
         proveedor: state.proveedor,
