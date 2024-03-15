@@ -73,17 +73,37 @@ export default function CreateCompras() {
   }, []);
 
   const handleChangeText = (value, name) => {
+    if (name === "cantidad") {
+      // Eliminar los ceros a la izquierda del valor antes de asignarlo al estado
+      value = value.replace(/^0+/, '');
+    }
     setState({ ...state, [name]: value });
   };
+  
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || state.fecha;
-    setState({
-      ...state,
-      fecha: currentDate,
-      showDatePicker: false,
-    });
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() - 15); // Resta 15 días a la fecha actual
+  
+    // Obtiene la fecha actual
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Establece las horas a 00:00:00 para comparar solo las fechas
+  
+    // Verifica si la fecha seleccionada está dentro del rango permitido y es igual al día actual o anterior
+    if (currentDate <= today && currentDate >= maxDate) {
+      setState({
+        ...state,
+        fecha: currentDate,
+        showDatePicker: false,
+      });
+    } else {
+      // Si la fecha seleccionada excede el límite o es posterior al día actual, muestra una alerta
+      Alert.alert("La fecha minimo 15 dias al dia actual y maximo dia actual");
+    }
   };
+  
+  
 
   const showDatePicker = () => {
     setState({ ...state, showDatePicker: true });
@@ -132,6 +152,7 @@ export default function CreateCompras() {
       };
 
       const response = await axiosClient.post("/compras", datosParaEnviar);
+      console.log("Producto guardado:", response.data);
 
       if (response) {
         navigation.navigate("comprasStack");
@@ -201,7 +222,9 @@ export default function CreateCompras() {
       nombre_repuesto: "",
       name: "",
     });
+    console.log("repuesto guardados", repuestosPrevios);
 
+    
   };
 
   const totalPreciosRepuestos = handleRepuestos.reduce((total, repuesto) => {
@@ -214,6 +237,8 @@ export default function CreateCompras() {
     
     setHandleRepuestos(newRepuestos); // y actualizo los repuestos
     
+    console.log("nuevos repestos", newRepuestos);
+    console.log("nuevos repuesotsssss", handleRepuestos);
   };
 
   return (
@@ -351,8 +376,9 @@ export default function CreateCompras() {
           <View style={tw`mb-2`}>
             {handleRepuestos.map((repuesto, index) => (
               <RepuestoCard key={index} repuesto={repuesto}>
-                <TouchableOpacity onPress={() => deleteItem(index)} style={tw`mx-auto items-center border-2 rounded-full border-red-500 w-10 p-1`}>
-                  <FontAwesomeIcon icon={faTrash} style={tw`text-red-500`}/>
+                <TouchableOpacity onPress={() => deleteItem(index)}>
+                  <FontAwesomeIcon icon={faTrash} />
+                  <Text>Eliminar</Text>
                 </TouchableOpacity>
               </RepuestoCard>
             ))}
