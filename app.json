@@ -19,12 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/motorbike.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.milosx.motorBike"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/motorbike.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4acd8604-930a-4b1f-aba2-d09fd87fdbf2"
+      }
     }
   }
 }

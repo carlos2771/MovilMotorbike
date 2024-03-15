@@ -186,10 +186,12 @@ const DrawerView = ({ navigation }) => {
         <MenuButtonItem text="Ir a Marcas" onPress={() => navigation.navigate('marcas')}/>
     </View>
     </ScrollView>
-    <View style={tw`mx-10`}>
-      <TouchableOpacity onPress={logout} style={tw`p-2 bg-blue-500 rounded flex-row items-center`}>
-        <FontAwesomeIcon icon={faRightFromBracket} style={tw`text-white mx-3`} />
-        <Text style={tw`text-center text-white font-bold text-xl`}>Cerrar sesión</Text>
+    <View style={tw``}>
+      <TouchableOpacity onPress={logout} style={tw` bg-blue-500 rounded flex-row items-center`}>
+        <View style={tw`border border-white p-2`}>
+          <FontAwesomeIcon icon={faRightFromBracket} style={tw`text-white p-3`} />
+        </View>
+        <Text style={tw`text-center text-white font-bold text-xl p-2`}>Cerrar sesión</Text>
       </TouchableOpacity>
       </View>
   </ScrollView>
