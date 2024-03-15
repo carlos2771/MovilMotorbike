@@ -73,7 +73,7 @@ export default function CreateCompras() {
   }, []);
 
   const handleChangeText = (value, name) => {
-    if (name === "cantidad") {
+    if (name === "cantidad" || name==="precio_unitario") {
       // Eliminar los ceros a la izquierda del valor antes de asignarlo al estado
       value = value.replace(/^0+/, '');
     }
