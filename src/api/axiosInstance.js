@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://backend-motorbikefull.onrender.com/api"
+const BASE_URL = "https://backend-motorbike.up.railway.app/api"
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
