@@ -80,7 +80,7 @@ export default function Marcas() {
             <View style={tw`flex-row flex-wrap`}>
               {findRepuesto(item._id).map((repuesto, index) => (
                 <Text key={index} style={tw`text-white mx-1 mb-1`}>
-                  {repuesto}
+                  {repuesto}<Text style={tw`font-bold text-blue-500 text-lg`}> |</Text>
                 </Text>
               ))}
             </View>

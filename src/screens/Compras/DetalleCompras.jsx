@@ -43,7 +43,7 @@ export default function DetalleCompra(props) {
           ))}
         </Text>
         <Text style={tw`text-white text-xl text-center mb-2`}>Detalle de compra</Text>
-        <View style={tw`bg-slate-700 p-5 rounded-lg shadow shadow-2xl shadow-blue-500`}>
+        <View style={tw`bg-slate-700 p-5 rounded-lg shadow shadow-2xl shadow-blue-500 max-w-full`}>
           <View style={tw`mb-2`}>
           <Text style={tw`text-white text-lg`}>Fecha: {moment(fecha).format('YYYY-MM-DD')}</Text>
           <Text style={tw`text-white text-lg`}>Código: {codigo}</Text>
@@ -53,14 +53,15 @@ export default function DetalleCompra(props) {
           </View>
           <Text style={tw`text-white text-lg mb-2`}>Repuestos:</Text>
           {repuestos.map((repuesto, index) => (
-            <View key={index} style={tw`bg-slate-700 m-1 p-1 rounded border-2 border-blue-400 flex-row`}>
-              <View style={tw`mr-auto`}>
-                <Text style={tw`text-white font-black`}>{repuesto.nombre_repuesto}</Text>
-                <Text style={tw`text-white`}>Cantidad:{repuesto.cantidad_repuesto}</Text>
+            <View key={index} style={tw`bg-slate-700 m-1 rounded border-2 border-blue-400 flex-row max-w-full`}>
+              <View style={tw`items-center justify-center bg-blue-600/70 w-12`}>
+                <Text style={tw`text-white  p-2 text-center text-white font-bold text-lg`}>{repuesto.cantidad_repuesto}</Text>
               </View>
-              <View style={tw``}>
-              <Text style={tw`text-white`}>Precio Unitario: ${repuesto.precio_unitario}</Text>
-              <Text style={tw`text-white`}>Precio Total: ${repuesto.precio_total}</Text>
+           
+              <View style={tw`ml-2 p-1`}>
+                <Text style={tw`text-white font-black max-w-50`}>{repuesto.nombre_repuesto}</Text>
+                <Text style={tw`text-white`}>Precio Unitario: ${repuesto.precio_unitario}</Text>
+                <Text style={tw`text-white`}>Precio Total: ${repuesto.precio_total}</Text>
               </View>
             </View>
           ))}

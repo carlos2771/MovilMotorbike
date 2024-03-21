@@ -16,7 +16,7 @@ import { AuthContext } from "../context/AuthProvider";
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const handlePress = () => {
   Linking.openURL("https://motorbikefull.onrender.com/reestablecer");
@@ -26,6 +26,7 @@ export default function SingnIn({ navigation: { navigate } }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { auth, singIn } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async () => {
     try {
@@ -49,6 +50,10 @@ export default function SingnIn({ navigation: { navigate } }) {
         console.error(error);
       }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -85,9 +90,19 @@ export default function SingnIn({ navigation: { navigate } }) {
             placeholder="Contraseña"
             onChangeText={(text) => setPassword(text)}
             value={password}
-            secureTextEntry={true}
+            secureTextEntry={!showPassword}
             placeholderTextColor="#ccc"
           />
+          <TouchableOpacity
+        style={{ position: 'absolute', right: 16, top: 16 }}
+        onPress={togglePasswordVisibility}
+      >
+        <FontAwesomeIcon
+          icon={showPassword ? faEyeSlash : faEye}
+          title={showPassword ? 'Ocultar' : 'Mostrar'}
+          style={tw`text-white`}
+        />
+      </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={tw`w-full h-12 bg-blue-700 items-center justify-center`}
@@ -105,3 +120,5 @@ export default function SingnIn({ navigation: { navigate } }) {
     </LinearGradient>
   );
 }
+
+

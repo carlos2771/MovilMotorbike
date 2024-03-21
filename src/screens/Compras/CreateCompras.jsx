@@ -351,7 +351,7 @@ export default function CreateCompras() {
           <View style={tw`mb-2`}>
             {handleRepuestos.map((repuesto, index) => (
               <RepuestoCard key={index} repuesto={repuesto}>
-               <TouchableOpacity onPress={() => deleteItem(index)} style={tw`mx-auto items-center border-2 rounded-full border-red-500 w-10 p-1`}>
+               <TouchableOpacity onPress={() => deleteItem(index)} style={tw`mx-auto mt-2 items-center border-2 rounded-full border-red-500 w-10 p-1`}>
                   <FontAwesomeIcon icon={faTrash} style={tw`text-red-500`}/>
                 </TouchableOpacity>
               </RepuestoCard>

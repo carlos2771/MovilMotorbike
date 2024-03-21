@@ -101,7 +101,7 @@ export default function Clientes() {
       end={{ x: 1, y: 0 }}
       style={[tw`flex-1 items-center p-4`]}
     >
-      <View style={tw`w-full`}>
+      <View style={tw`w-full mb-12`}>
         <View style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}>
           <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
           <TextInput

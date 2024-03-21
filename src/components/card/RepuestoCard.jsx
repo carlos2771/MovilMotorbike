@@ -12,19 +12,23 @@ const RepuestoCard = ({ repuesto, index, children}) => {
         <View style={tw`px-4`}>
             <View style={tw`flex-row`}>
                 <Text style={tw`text-xl font-black text-white mr-auto`}>{repuesto.nombre_repuesto}</Text>
-                <Text style={tw`text-lg text-white`}>Cantidad: {repuesto.cantidad_repuesto}</Text>
+                
+            </View>
+            <View style={tw`flex-row`}>
+            <Text style={tw`text-white mr-auto mt-1`}>Cantidad: </Text>
+            <Text style={tw`text-white`}>{repuesto.cantidad_repuesto}</Text>
             </View>
             <View style={tw`flex-row`}>
             <Text style={tw`text-white mr-auto mt-1`}>Marca:</Text>
-            <Text style={tw`text-white text-lg`}>{repuesto.marca_repuesto}</Text>
+            <Text style={tw`text-white`}>{repuesto.marca_repuesto}</Text>
             </View>
             <View style={tw`flex-row`}>
             <Text style={tw`text-white mr-auto mt-1`}>Precio Unitario:</Text>
-            <Text style={tw`text-white font-bold text-lg`}>{repuesto.precio_unitario}</Text>
+            <Text style={tw`text-white font-bold`}>{repuesto.precio_unitario}</Text>
             </View>
             <View style={tw`flex-row`}>
                 <Text style={tw`text-white mr-auto mt-1`}>Precio Total:</Text>
-                <Text style={tw`text-white font-bold text-xl`}>{repuesto.precio_total}</Text>
+                <Text style={tw`text-white font-bold`}>{repuesto.precio_total}</Text>
             </View>
         </View>
         {children}

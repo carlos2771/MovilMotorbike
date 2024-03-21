@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-    StyleSheet,
-    Text,
-    View,
-    ScrollView,
-    Button,
-    FlatList,
-    TouchableOpacity,
-    Alert,
-    Dimensions,
-    TextInput,
-    RefreshControl
-  } from "react-native";
-import { useRepuestos } from '../../context/RepuestosContext';
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+  TextInput,
+  RefreshControl,
+} from "react-native";
+import { useRepuestos } from "../../context/RepuestosContext";
 
 import { LinearGradient } from "expo-linear-gradient";
 import tw from "twrnc";
@@ -26,10 +26,11 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 export default function Repuestos() {
-  const { repuestos, getRepuestos, deleteRepuesto, updateRepuesto } = useRepuestos();
+  const { repuestos, getRepuestos, deleteRepuesto, updateRepuesto } =
+    useRepuestos();
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +38,7 @@ export default function Repuestos() {
         await getRepuestos();
         setLoading(false);
       } catch (error) {
-        console.error('Error al obtener los repuestos:', error);
+        console.error("Error al obtener los repuestos:", error);
         setLoading(false);
       }
     };
@@ -47,15 +48,16 @@ export default function Repuestos() {
   const filterRepuestos = repuestos.filter((item) => {
     return (
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.marca.nombre_marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.marca.nombre_marca
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       item.price.toString().includes(searchTerm) ||
       item.amount.toString().includes(searchTerm) || // Convertir a cadena antes de buscar
       item.estado.toLowerCase().includes(searchTerm.toLowerCase()) // Si 'estado' es un campo relevante
       // Agrega más condiciones si hay otros campos que quieras incluir en la búsqueda
     );
   });
-  
-  
+
   const refreshScreen = () => {
     setRefreshing(true); // Establecer el estado de refresco en verdadero
     getRepuestos(); // Llamada para refrescar la pantalla
@@ -63,18 +65,23 @@ export default function Repuestos() {
   };
 
   const renderItem = ({ item }) => {
-    let borderColor = item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
+    let borderColor =
+      item.estado === "Activo" ? tw`border-blue-400` : tw`border-red-500`;
     return (
       <TouchableOpacity
-        style={[tw`m-2  rounded p-3 border border-2`, borderColor ]}
+        style={[tw`m-2  rounded border border-2`, borderColor]}
       >
         <View style={tw`flex-row`}>
-        <Text style={tw`text-white text-2xl mr-auto`}>{item.name}</Text>
-        <Text style={tw`text-white text-xl`}>Cantidad: {item.amount}</Text>
-        </View>
-        <View style={tw`flex-row`}>
-        <Text style={tw`text-white mr-auto`}>Marca: {item.marca.nombre_marca}</Text>
-        <Text style={tw`text-white`}>Precio: {item.price}</Text>
+          <View style={tw`justify-center mr-2 w-14 bg-blue-500/70 text-center`}>
+            <Text style={tw` text-xl font-bold text-white text-center`}>{item.amount}</Text>
+          </View>
+          <View style={tw`max-w-62`}>
+            <Text style={tw`text-white text-2xl mr-auto max-w-full`}>{item.name}</Text>
+            <Text style={tw`text-white mr-auto`}>
+              Marca: {item.marca.nombre_marca}
+            </Text>
+            <Text style={tw`text-white`}>Precio: {item.price}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -87,72 +94,73 @@ export default function Repuestos() {
       end={{ x: 1, y: 0 }}
       style={[tw`flex-1 items-center p-4`]}
     >
-    <View style={tw`w-full`}>
-    <View
-        style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
-      >
-        <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
-        <TextInput
-          style={tw`h-10 text-white w-full ml-2`}
-          placeholder=" Buscar"
-          placeholderTextColor="white"
-          onChangeText={(text) => setSearchTerm(text)}
-          value={searchTerm}
-        />
-      </View> 
-      {loading ? (
-        <Text>Cargando...</Text>
-      ) : (
-        <FlatList
-          data={filterRepuestos}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.list}
-          refreshControl={ // Agrega RefreshControl para habilitar el pull-to-refresh
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={refreshScreen}
-              colors={["#1E293B"]} // Colores del indicador de carga
-              progressBackgroundColor="#FFFFFF" // Color de fondo del indicador de carga
-            />
-          }
-        />
-      )}
-    </View>
+      <View style={tw`w-full mb-12`}>
+        <View
+          style={tw`w-full flex-row justify-between mb-4 items-center border border-white rounded px-2 pl-5`}
+        >
+          <FontAwesomeIcon icon={faMagnifyingGlass} style={tw`text-white`} />
+          <TextInput
+            style={tw`h-10 text-white w-full ml-2`}
+            placeholder=" Buscar"
+            placeholderTextColor="white"
+            onChangeText={(text) => setSearchTerm(text)}
+            value={searchTerm}
+          />
+        </View>
+        {loading ? (
+          <Text>Cargando...</Text>
+        ) : (
+          <FlatList
+            data={filterRepuestos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.list}
+            refreshControl={
+              // Agrega RefreshControl para habilitar el pull-to-refresh
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refreshScreen}
+                colors={["#1E293B"]} // Colores del indicador de carga
+                progressBackgroundColor="#FFFFFF" // Color de fondo del indicador de carga
+              />
+            }
+          />
+        )}
+      </View>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  list: {
+    flexGrow: 1,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 20,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-    },
-    list: {
-      flexGrow: 1,
-    },
-    card: {
-      backgroundColor: '#fff',
-      borderRadius: 8,
-      padding: 20,
-      marginBottom: 10,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 10,
-    },
-  });
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+});
